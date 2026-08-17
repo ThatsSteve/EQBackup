@@ -1,0 +1,116 @@
+[
+  {
+    "id": "daft_punk",
+    "name": "Daft Punk",
+    "genre": "Electronic",
+    "traits": {
+      "sub_bass": true,
+      "mid_bass_punch": true,
+      "treble_crisp": true
+    }
+  },
+  {
+    "id": "hans_zimmer",
+    "name": "Hans Zimmer",
+    "genre": "Soundtrack",
+    "traits": {
+      "sub_bass": true,
+      "wide_soundstage": true,
+      "dynamic_v": true
+    }
+  },
+  {
+    "id": "adele",
+    "name": "Adele",
+    "genre": "Pop",
+    "traits": {
+      "vocal_focus": true,
+      "warm_mids": true
+    }
+  },
+  {
+    "id": "metallica",
+    "name": "Metallica",
+    "genre": "Metal",
+    "traits": {
+      "mid_bass_punch": true,
+      "dynamic_v": true
+    }
+  },
+  {
+    "id": "miles_davis",
+    "name": "Miles Davis",
+    "genre": "Jazz",
+    "traits": {
+      "warm_mids": true,
+      "treble_crisp": true,
+      "wide_soundstage": true
+    }
+  },
+  {
+    "id": "kendrick_lamar",
+    "name": "Kendrick Lamar",
+    "genre": "Hip Hop",
+    "traits": {
+      "sub_bass": true,
+      "vocal_focus": true
+    }
+  },
+  {
+    "id": "pink_floyd",
+    "name": "Pink Floyd",
+    "genre": "Rock",
+    "traits": {
+      "wide_soundstage": true,
+      "warm_mids": true,
+      "sub_bass": true
+    }
+  },
+  {
+    "id": "billie_eilish",
+    "name": "Billie Eilish",
+    "genre": "Pop",
+    "traits": {
+      "sub_bass": true,
+      "vocal_focus": true,
+      "treble_crisp": true
+    }
+  },
+  {
+    "id": "john_mayer",
+    "name": "John Mayer",
+    "genre": "Acoustic",
+    "traits": {
+      "warm_mids": true,
+      "vocal_focus": true
+    }
+  },
+  {
+    "id": "skrillex",
+    "name": "Skrillex",
+    "genre": "Electronic",
+    "traits": {
+      "sub_bass": true,
+      "dynamic_v": true,
+      "mid_bass_punch": true
+    }
+  },
+  {
+    "id": "taylor_swift",
+    "name": "Taylor Swift",
+    "genre": "Pop",
+    "traits": {
+      "vocal_focus": true,
+      "treble_crisp": true
+    }
+  },
+  {
+    "id": "ludovico_einaudi",
+    "name": "Ludovico Einaudi",
+    "genre": "Classical",
+    "traits": {
+      "warm_mids": true,
+      "wide_soundstage": true
+    }
+  }
+]

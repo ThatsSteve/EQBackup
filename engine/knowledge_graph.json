@@ -1,0 +1,673 @@
+{
+  "hardware": [
+    {
+      "id": "sennheiser_hd600",
+      "aliases": [
+        "hd600",
+        "sennheiser hd 600",
+        "hd 600"
+      ],
+      "type": "headphone",
+      "deficits": [
+        {
+          "zone": "sub_bass",
+          "action": "boost",
+          "suggested_filter": {
+            "type": "LS",
+            "freq": 50,
+            "gain": 4.5,
+            "q": 0.7
+          }
+        },
+        {
+          "zone": "treble",
+          "action": "smooth",
+          "suggested_filter": {
+            "type": "PK",
+            "freq": 8000,
+            "gain": -1.5,
+            "q": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "sennheiser_hd800s",
+      "aliases": [
+        "hd800s",
+        "hd 800s",
+        "hd800"
+      ],
+      "type": "headphone",
+      "deficits": [
+        {
+          "zone": "treble_peak",
+          "action": "tame",
+          "suggested_filter": {
+            "type": "PK",
+            "freq": 6000,
+            "gain": -3,
+            "q": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "sennheiser_momentum_4",
+      "brand": "Sennheiser",
+      "model": "Momentum 4",
+      "name": "Sennheiser Momentum 4",
+      "type": "headphone",
+      "impedance": 32,
+      "sensitivity": 100,
+      "architecture": "open",
+      "aliases": [
+        "sennheiser_momentum_4",
+        "sennheiser momentum 4",
+        "sennheiser momentum 4"
+      ],
+      "deficits": [
+        {
+          "issue": "compensazione_generica_auto_apprendimento",
+          "suggested_filter": {
+            "type": "PK",
+            "freq": 2000,
+            "gain": 1.5,
+            "q": 1
+          }
+        }
+      ],
+      "source": "online_web_search_auto_learning",
+      "ingested_at": "2026-07-25T16:43:52.728Z"
+    },
+    {
+      "id": "fiio_custom_dac",
+      "brand": "Fiio",
+      "model": "Custom DAC",
+      "name": "FiiO Custom DAC",
+      "type": "dac",
+      "impedance": 100,
+      "sensitivity": 122,
+      "architecture": "solid-state",
+      "aliases": [
+        "fiio_custom_dac",
+        "fiio custom dac",
+        "fiio custom dac"
+      ],
+      "deficits": [
+        {
+          "issue": "compensazione_generica_auto_apprendimento",
+          "suggested_filter": {
+            "type": "PK",
+            "freq": 2000,
+            "gain": 1.5,
+            "q": 1
+          }
+        }
+      ],
+      "source": "online_web_search_auto_learning",
+      "ingested_at": "2026-07-25T16:51:05.839Z"
+    }
+  ],
+  "descriptors": {
+    "bass": {
+      "neutral": [],
+      "warm": [
+        {
+          "type": "PK",
+          "freq": 200,
+          "gain": 2.5,
+          "q": 0.8
+        }
+      ],
+      "punchy": [
+        {
+          "type": "LS",
+          "freq": 60,
+          "gain": 3.5,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 120,
+          "gain": 2,
+          "q": 1.4
+        }
+      ]
+    },
+    "mids": {
+      "balanced": [],
+      "intimate": [
+        {
+          "type": "PK",
+          "freq": 1800,
+          "gain": 2.5,
+          "q": 1.1
+        }
+      ],
+      "intensive": [
+        {
+          "type": "PK",
+          "freq": 800,
+          "gain": 1.5,
+          "q": 1
+        },
+        {
+          "type": "PK",
+          "freq": 2500,
+          "gain": 2,
+          "q": 1.2
+        }
+      ]
+    },
+    "treble": {
+      "soft": [
+        {
+          "type": "HS",
+          "freq": 8000,
+          "gain": -2,
+          "q": 0.7
+        }
+      ],
+      "brilliant": [
+        {
+          "type": "HS",
+          "freq": 10000,
+          "gain": 2.5,
+          "q": 0.7
+        }
+      ],
+      "analytical": [
+        {
+          "type": "PK",
+          "freq": 8000,
+          "gain": 1.5,
+          "q": 1.5
+        },
+        {
+          "type": "HS",
+          "freq": 12000,
+          "gain": 2,
+          "q": 0.7
+        }
+      ]
+    }
+  },
+  "artists": [
+    {
+      "id": "daft_punk",
+      "aliases": [
+        "daft punk",
+        "daft_punk"
+      ],
+      "genre": "Electronic / Dance",
+      "acoustic_traits": [
+        "sub_bass_emphasis",
+        "punchy_kick",
+        "treble_crisp"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 50,
+          "gain": 3,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 100,
+          "gain": 1.5,
+          "q": 1.2
+        },
+        {
+          "type": "HS",
+          "freq": 10000,
+          "gain": 1.5,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "hans_zimmer",
+      "aliases": [
+        "hans zimmer",
+        "hans_zimmer",
+        "zimmer"
+      ],
+      "genre": "Soundtrack / Orchestral",
+      "acoustic_traits": [
+        "wide_soundstage",
+        "sub_bass_rumble",
+        "dynamic_range"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 40,
+          "gain": 3.5,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 400,
+          "gain": 1,
+          "q": 1
+        },
+        {
+          "type": "HS",
+          "freq": 10000,
+          "gain": 2.5,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "adele",
+      "aliases": [
+        "adele"
+      ],
+      "genre": "Pop / Soul",
+      "acoustic_traits": [
+        "warm_mids",
+        "vocal_presence",
+        "natural_timbre"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "PK",
+          "freq": 250,
+          "gain": 1.5,
+          "q": 0.9
+        },
+        {
+          "type": "PK",
+          "freq": 1500,
+          "gain": 2,
+          "q": 1
+        }
+      ]
+    },
+    {
+      "id": "metallica",
+      "aliases": [
+        "metallica"
+      ],
+      "genre": "Metal / Rock",
+      "acoustic_traits": [
+        "mid_bass_punch",
+        "dynamic_bite",
+        "controlled_treble"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "PK",
+          "freq": 80,
+          "gain": 2.5,
+          "q": 1
+        },
+        {
+          "type": "PK",
+          "freq": 3000,
+          "gain": 2,
+          "q": 1.4
+        },
+        {
+          "type": "PK",
+          "freq": 6000,
+          "gain": -1,
+          "q": 2
+        }
+      ]
+    },
+    {
+      "id": "miles_davis",
+      "aliases": [
+        "miles davis",
+        "miles_davis",
+        "davis"
+      ],
+      "genre": "Jazz",
+      "acoustic_traits": [
+        "warm_mids",
+        "treble_crisp",
+        "wide_soundstage"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "PK",
+          "freq": 300,
+          "gain": 1,
+          "q": 1
+        },
+        {
+          "type": "PK",
+          "freq": 2000,
+          "gain": 1,
+          "q": 1.2
+        },
+        {
+          "type": "HS",
+          "freq": 10000,
+          "gain": 2,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "kendrick_lamar",
+      "aliases": [
+        "kendrick lamar",
+        "kendrick_lamar",
+        "kendrick"
+      ],
+      "genre": "Hip-Hop / Rap",
+      "acoustic_traits": [
+        "deep_sub_bass",
+        "vocal_presence",
+        "clean_mids"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 45,
+          "gain": 4,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 200,
+          "gain": -1,
+          "q": 1
+        },
+        {
+          "type": "PK",
+          "freq": 1800,
+          "gain": 2,
+          "q": 1.1
+        }
+      ]
+    },
+    {
+      "id": "pink_floyd",
+      "aliases": [
+        "pink floyd",
+        "pink_floyd",
+        "floyd"
+      ],
+      "genre": "Rock / Psychedelic",
+      "acoustic_traits": [
+        "wide_soundstage",
+        "warm_mids",
+        "sub_bass_foundation"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 50,
+          "gain": 2.5,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 500,
+          "gain": 1,
+          "q": 1.1
+        },
+        {
+          "type": "HS",
+          "freq": 10000,
+          "gain": 2,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "billie_eilish",
+      "aliases": [
+        "billie eilish",
+        "billie_eilish",
+        "billie"
+      ],
+      "genre": "Pop / Alternative",
+      "acoustic_traits": [
+        "deep_sub_bass",
+        "intimate_vocal",
+        "treble_crisp"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 40,
+          "gain": 3.5,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 1200,
+          "gain": 2,
+          "q": 1.1
+        },
+        {
+          "type": "HS",
+          "freq": 12000,
+          "gain": 1.5,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "john_mayer",
+      "aliases": [
+        "john mayer",
+        "john_mayer",
+        "mayer"
+      ],
+      "genre": "Acoustic / Blues Rock",
+      "acoustic_traits": [
+        "warm_acoustic",
+        "vocal_presence",
+        "natural_mids"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "PK",
+          "freq": 250,
+          "gain": 1.5,
+          "q": 0.9
+        },
+        {
+          "type": "PK",
+          "freq": 1500,
+          "gain": 2,
+          "q": 1
+        },
+        {
+          "type": "HS",
+          "freq": 8000,
+          "gain": -0.5,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "skrillex",
+      "aliases": [
+        "skrillex"
+      ],
+      "genre": "Electronic / Dubstep",
+      "acoustic_traits": [
+        "heavy_sub_bass",
+        "dynamic_punch",
+        "aggressive_treble"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 45,
+          "gain": 4.5,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 120,
+          "gain": 2,
+          "q": 1.2
+        },
+        {
+          "type": "HS",
+          "freq": 10000,
+          "gain": 2,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "taylor_swift",
+      "aliases": [
+        "taylor swift",
+        "taylor_swift",
+        "taylor"
+      ],
+      "genre": "Pop / Acoustic",
+      "acoustic_traits": [
+        "vocal_focus",
+        "treble_crisp",
+        "clean_bass"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 60,
+          "gain": 2,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 1600,
+          "gain": 2,
+          "q": 1
+        },
+        {
+          "type": "HS",
+          "freq": 12000,
+          "gain": 1.5,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "ludovico_einaudi",
+      "aliases": [
+        "ludovico einaudi",
+        "ludovico_einaudi",
+        "einaudi"
+      ],
+      "genre": "Classical / Minimalist",
+      "acoustic_traits": [
+        "wide_soundstage",
+        "natural_timbre",
+        "concert_hall_air"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 60,
+          "gain": 1.5,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 400,
+          "gain": 1,
+          "q": 1
+        },
+        {
+          "type": "HS",
+          "freq": 10000,
+          "gain": 2.5,
+          "q": 0.7
+        }
+      ]
+    },
+    {
+      "id": "the_weeknd",
+      "name": "The Weeknd",
+      "aliases": [
+        "the_weeknd",
+        "the weeknd",
+        "the_weeknd"
+      ],
+      "genre": "R&B/Soul",
+      "acoustic_traits": [
+        "deep_sub_bass",
+        "vocal_presence",
+        "clean_lower_mids"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "LS",
+          "freq": 45,
+          "gain": 4,
+          "q": 0.7
+        },
+        {
+          "type": "PK",
+          "freq": 200,
+          "gain": -1,
+          "q": 1
+        },
+        {
+          "type": "PK",
+          "freq": 1800,
+          "gain": 2,
+          "q": 1.1
+        }
+      ],
+      "source": "external_api_ingestion",
+      "ingested_at": "2026-07-25T16:36:23.845Z"
+    },
+    {
+      "id": "soen",
+      "name": "Soen",
+      "aliases": [
+        "soen",
+        "soen",
+        "soen"
+      ],
+      "genre": "Metal",
+      "acoustic_traits": [
+        "mid_bass_punch",
+        "guitar_body",
+        "dynamic_bite"
+      ],
+      "recommended_modifiers": [
+        {
+          "type": "PK",
+          "freq": 80,
+          "gain": 2.5,
+          "q": 1
+        },
+        {
+          "type": "PK",
+          "freq": 500,
+          "gain": 1,
+          "q": 1.2
+        },
+        {
+          "type": "PK",
+          "freq": 3000,
+          "gain": 2,
+          "q": 1.4
+        },
+        {
+          "type": "PK",
+          "freq": 6000,
+          "gain": -1,
+          "q": 2
+        }
+      ],
+      "source": "external_api_ingestion",
+      "ingested_at": "2026-07-26T20:10:11.186Z"
+    }
+  ]
+}

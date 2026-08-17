@@ -1,0 +1,18 @@
+{
+  "warm": [
+    { "type": "PK", "freq": 250, "gain": 3.0, "q": 0.7 },
+    { "type": "HS", "freq": 10000, "gain": -2.0, "q": 0.7071 }
+  ],
+  "dynamic": [
+    { "type": "LS", "freq": 60, "gain": 4.0, "q": 0.7071 },
+    { "type": "HS", "freq": 8000, "gain": 3.0, "q": 0.7071 }
+  ],
+  "vocal": [
+    { "type": "PK", "freq": 2000, "gain": 3.0, "q": 1.2 }
+  ],
+  "bright": [
+    { "type": "PK", "freq": 4000, "gain": 2.0, "q": 1.41 },
+    { "type": "PK", "freq": 8000, "gain": 3.0, "q": 1.41 },
+    { "type": "PK", "freq": 200, "gain": -1.5, "q": 1.0 }
+  ]
+}

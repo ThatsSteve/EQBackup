@@ -1,0 +1,21 @@
+{
+  "name": "eq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sync-autoeq": "node engine/autoeqDownloader.js",
+    "sync-dacamp": "node engine/syncDacAmp.js",
+    "ingest-artists": "node scripts/ingestArtists.js",
+    "test-artist-incidence": "node scripts/testArtistIncidence.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

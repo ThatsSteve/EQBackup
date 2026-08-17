@@ -1,0 +1,473 @@
+/* --- MASTER LAYOUT ARCHITECTURE --- */
+
+/* 1. Posizionamento e Geometria: Contenitore principale bilanciato e ben spaziato */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  padding: 24px 36px;
+  gap: 24px;
+  box-sizing: border-box;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* 2. Il Percorso Guidato (Wizard) rigorosamente al centro */
+.main-wizard-wrapper {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.main-wizard-wrapper::-webkit-scrollbar { width: 6px; }
+.main-wizard-wrapper::-webkit-scrollbar-track { background: transparent; }
+.main-wizard-wrapper::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.25); border-radius: 3px; }
+
+/* Dedicated luxury glass card centered in the workspace */
+.main-wizard {
+  width: 100%;
+  max-width: 960px;
+  max-height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: rgba(14, 16, 22, 0.85);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  border-radius: 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(0, 240, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.wizard-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 32px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wizard-content::-webkit-scrollbar { width: 6px; }
+.wizard-content::-webkit-scrollbar-track { background: transparent; }
+.wizard-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+
+.wizard-footer {
+  padding: 20px 48px;
+  background: rgba(0, 0, 0, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.wizard-footer-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* 3. L'Assistente IA in un container fisso in basso con altezza fissa e bloccata */
+.sidebar-concierge {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  height: 210px;
+  min-height: 210px;
+  max-height: 210px;
+  flex: 0 0 210px;
+  display: flex;
+  flex-direction: row;
+  background: rgba(11, 13, 18, 0.92);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75), 0 0 30px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.ai-concierge-chat {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.chat-header-custom {
+  flex: 0 0 270px;
+  width: 270px;
+  padding: 20px 24px;
+  border-right: 1px solid rgba(59, 130, 246, 0.25);
+  background: linear-gradient(180deg, rgba(20, 24, 34, 0.6) 0%, rgba(11, 13, 18, 0.8) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chat-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Messaggi meno recenti memorizzati e scorrimento tramite scroll interno */
+.chat-history-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chat-history-container::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-history-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+.chat-history-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00f0ff, #3b82f6);
+  border-radius: 3px;
+}
+
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  max-width: 85%;
+  animation: slideInMsg 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInMsg {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-message.ai {
+  align-self: flex-start;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chat-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.chat-message.user .chat-avatar {
+  margin-right: 0;
+  margin-left: 12px;
+  background: linear-gradient(135deg, #00f0ff, #3b82f6);
+}
+
+.chat-message.ai .chat-avatar {
+  background: rgba(255, 51, 102, 0.2);
+  border: 1px solid rgba(255, 51, 102, 0.4);
+}
+
+.chat-bubble {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #fff;
+  word-wrap: break-word;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.chat-message.ai .chat-bubble {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-left-radius: 2px;
+}
+
+.chat-message.user .chat-bubble {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(59, 130, 246, 0.35));
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-top-right-radius: 2px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.chat-input-area {
+  flex: 0 0 54px;
+  height: 54px;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(8, 10, 14, 0.6);
+  gap: 12px;
+}
+
+.chat-input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 10px 18px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.chat-input:focus {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+}
+
+.chat-input::placeholder {
+  color: var(--text-muted);
+}
+
+.chat-send-btn {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  background: #00f0ff;
+  color: #000;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* --- RESPONSIVE MOBILE & DRAWER ARCHITECTURE --- */
+.mobile-chat-fab {
+  display: none;
+}
+
+.mobile-close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+@media (max-width: 900px) {
+  .app-container {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .main-wizard {
+    border-radius: 16px;
+  }
+
+  .wizard-content {
+    padding: 24px 20px;
+  }
+
+  .wizard-footer {
+    padding: 16px 20px;
+  }
+
+  .sidebar-concierge {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 85vh;
+    max-height: 85vh;
+    flex: none;
+    flex-direction: column;
+    border-radius: 24px 24px 0 0;
+    border-right: none;
+    border-top: 1px solid rgba(0, 240, 255, 0.4);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.9);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1000;
+  }
+
+  .ai-concierge-chat {
+    flex-direction: column;
+  }
+
+  .chat-header-custom {
+    width: 100%;
+    min-width: 100%;
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.25);
+    padding: 16px 20px;
+  }
+
+  .sidebar-concierge.mobile-open {
+    transform: translateY(0);
+  }
+
+  .mobile-chat-fab {
+    display: flex;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00f0ff, #3b82f6);
+    box-shadow: 0 6px 25px rgba(0, 240, 255, 0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 900;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .mobile-chat-fab:active {
+    transform: scale(0.92);
+  }
+
+  .fab-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ff3366;
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+
+  .mobile-close-btn {
+    display: flex;
+  }
+}
+
+/* --- RESPONSIVE MOBILE OPTIMIZATIONS FOR COMBOBOX & LAYOUT --- */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 14px;
+    gap: 12px;
+    overflow-x: hidden;
+  }
+
+  .main-wizard-wrapper {
+    padding: 4px 0;
+  }
+
+  .main-wizard {
+    border-radius: 16px;
+    max-width: 100%;
+  }
+
+  .wizard-content {
+    padding: 18px 14px;
+    overflow-x: hidden;
+  }
+
+  .hardware-form {
+    max-width: 100%;
+    width: 100%;
+    padding: 0;
+  }
+
+  .input-wrapper-validated {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .validation-badge {
+    align-self: flex-start;
+  }
+
+  /* Assicuriamo che la tendina del SearchableCombobox sovrasti qualsiasi altro elemento con z-index elevatissimo */
+  .combobox-dropdown-list {
+    z-index: 999999 !important;
+  }
+
+  .parametric-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .chart-container {
+    height: 300px; /* Ridotto su mobile */
+  }
+
+  .symptom-pill {
+    width: 100%;
+    justify-content: center;
+  }
+}
+.badge-origin { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-left: 8px; font-weight: bold; }
+.badge-autoeq { background: #39ff14; color: #000; }
+.badge-artista { background: #00f0ff; color: #000; }
+.badge-manuale { background: #ff9900; color: #000; }

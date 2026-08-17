@@ -1,0 +1,782 @@
+[
+  {
+    "id": "topping-dx3-pro-plus",
+    "brand": "Topping",
+    "model": "DX3 Pro+",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 122,
+    "max_power_mw_32ohm": 1800,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-dx5-ii",
+    "brand": "Topping",
+    "model": "DX5 II",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 128,
+    "max_power_mw_32ohm": 1800,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-dx7-pro-plus",
+    "brand": "Topping",
+    "model": "DX7 Pro+",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 127,
+    "max_power_mw_32ohm": 1900,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-dx9",
+    "brand": "Topping",
+    "model": "DX9",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 131,
+    "max_power_mw_32ohm": 7000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-e30-ii",
+    "brand": "Topping",
+    "model": "E30 II",
+    "type": "DAC",
+    "output_impedance_ohms": 20,
+    "snr_db": 123,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-e50",
+    "brand": "Topping",
+    "model": "E50",
+    "type": "DAC",
+    "output_impedance_ohms": 20,
+    "snr_db": 126,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-e70-velvet",
+    "brand": "Topping",
+    "model": "E70 Velvet",
+    "type": "DAC",
+    "output_impedance_ohms": 50,
+    "snr_db": 131,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-d90se",
+    "brand": "Topping",
+    "model": "D90SE",
+    "type": "DAC",
+    "output_impedance_ohms": 100,
+    "snr_db": 134,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-l30-ii",
+    "brand": "Topping",
+    "model": "L30 II",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 144,
+    "max_power_mw_32ohm": 3500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-l50",
+    "brand": "Topping",
+    "model": "L50",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 145,
+    "max_power_mw_32ohm": 3500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-l70",
+    "brand": "Topping",
+    "model": "L70",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 146,
+    "max_power_mw_32ohm": 7500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "topping-a90-discrete",
+    "brand": "Topping",
+    "model": "A90 Discrete",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 145,
+    "max_power_mw_32ohm": 9800,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-k3-s",
+    "brand": "FiiO",
+    "model": "K3s",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 114,
+    "max_power_mw_32ohm": 200,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-k5-pro-ess",
+    "brand": "FiiO",
+    "model": "K5 Pro ESS",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1.2,
+    "snr_db": 118,
+    "max_power_mw_32ohm": 1500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-k7-bt",
+    "brand": "FiiO",
+    "model": "K7 BT",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 120,
+    "max_power_mw_32ohm": 2000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-k9-pro-ess",
+    "brand": "FiiO",
+    "model": "K9 Pro ESS",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 129,
+    "max_power_mw_32ohm": 2100,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-ka3",
+    "brand": "FiiO",
+    "model": "KA3",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.5,
+    "snr_db": 122,
+    "max_power_mw_32ohm": 240,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-ka5",
+    "brand": "FiiO",
+    "model": "KA5",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.3,
+    "snr_db": 124,
+    "max_power_mw_32ohm": 265,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-ka17",
+    "brand": "FiiO",
+    "model": "KA17",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.3,
+    "snr_db": 126,
+    "max_power_mw_32ohm": 650,
+    "has_eq_impact": false
+  },
+  {
+    "id": "fiio-q7",
+    "brand": "FiiO",
+    "model": "Q7",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.2,
+    "snr_db": 125,
+    "max_power_mw_32ohm": 3000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-su-1",
+    "brand": "SMSL",
+    "model": "SU-1",
+    "type": "DAC",
+    "output_impedance_ohms": 47,
+    "snr_db": 121,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-su-8s",
+    "brand": "SMSL",
+    "model": "SU-8s",
+    "type": "DAC",
+    "output_impedance_ohms": 10,
+    "snr_db": 126,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-su-9-pro",
+    "brand": "SMSL",
+    "model": "SU-9 Pro",
+    "type": "DAC",
+    "output_impedance_ohms": 10,
+    "snr_db": 133,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-d-300",
+    "brand": "SMSL",
+    "model": "D300 (RohiM)",
+    "type": "DAC",
+    "output_impedance_ohms": 20,
+    "snr_db": 128,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-sh-8s",
+    "brand": "SMSL",
+    "model": "SH-8s",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 140,
+    "max_power_mw_32ohm": 3000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-sh-9",
+    "brand": "SMSL",
+    "model": "SH-9",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 141,
+    "max_power_mw_32ohm": 6000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-sp400",
+    "brand": "SMSL",
+    "model": "SP400 THX AAA-888",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 143,
+    "max_power_mw_32ohm": 12000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-c200",
+    "brand": "SMSL",
+    "model": "C200",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 126,
+    "max_power_mw_32ohm": 2600,
+    "has_eq_impact": false
+  },
+  {
+    "id": "smsl-dl200",
+    "brand": "SMSL",
+    "model": "DL200",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.5,
+    "snr_db": 126,
+    "max_power_mw_32ohm": 3000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "schiit-magni-unity",
+    "brand": "Schiit",
+    "model": "Magni Unity",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 115,
+    "max_power_mw_32ohm": 2500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "schiit-modi-plus",
+    "brand": "Schiit",
+    "model": "Modi+",
+    "type": "DAC",
+    "output_impedance_ohms": 75,
+    "snr_db": 118,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "schiit-modius-e",
+    "brand": "Schiit",
+    "model": "Modius E",
+    "type": "DAC",
+    "output_impedance_ohms": 75,
+    "snr_db": 119,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "schiit-midgard",
+    "brand": "Schiit",
+    "model": "Midgard",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 128,
+    "max_power_mw_32ohm": 5500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "schiit-jotunheim-2",
+    "brand": "Schiit",
+    "model": "Jotunheim 2",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 122,
+    "max_power_mw_32ohm": 7500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "schiit-bifrost-2-64",
+    "brand": "Schiit",
+    "model": "Bifrost 2/64",
+    "type": "DAC",
+    "output_impedance_ohms": 75,
+    "snr_db": 124,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "schiit-lyr-plus",
+    "brand": "Schiit",
+    "model": "Lyr+",
+    "type": "Amp",
+    "output_impedance_ohms": 0.5,
+    "snr_db": 120,
+    "max_power_mw_32ohm": 6000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "jds-labs-atom-dac-2",
+    "brand": "JDS Labs",
+    "model": "Atom DAC 2",
+    "type": "DAC",
+    "output_impedance_ohms": 50,
+    "snr_db": 119,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "jds-labs-atom-amp-2",
+    "brand": "JDS Labs",
+    "model": "Atom Amp 2",
+    "type": "Amp",
+    "output_impedance_ohms": 0.7,
+    "snr_db": 124,
+    "max_power_mw_32ohm": 2600,
+    "has_eq_impact": false
+  },
+  {
+    "id": "jds-labs-element-iii-mk2",
+    "brand": "JDS Labs",
+    "model": "Element III MK2",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.5,
+    "snr_db": 120,
+    "max_power_mw_32ohm": 2300,
+    "has_eq_impact": false
+  },
+  {
+    "id": "chord-mojo-2",
+    "brand": "Chord",
+    "model": "Mojo 2",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.06,
+    "snr_db": 125,
+    "max_power_mw_32ohm": 600,
+    "has_eq_impact": false
+  },
+  {
+    "id": "chord-hugo-2",
+    "brand": "Chord",
+    "model": "Hugo 2",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.025,
+    "snr_db": 126,
+    "max_power_mw_32ohm": 740,
+    "has_eq_impact": false
+  },
+  {
+    "id": "chord-hugo-tt2",
+    "brand": "Chord",
+    "model": "Hugo TT2",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.042,
+    "snr_db": 127,
+    "max_power_mw_32ohm": 2880,
+    "has_eq_impact": false
+  },
+  {
+    "id": "chord-dave",
+    "brand": "Chord",
+    "model": "DAVE",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.055,
+    "snr_db": 127,
+    "max_power_mw_32ohm": 1400,
+    "has_eq_impact": false
+  },
+  {
+    "id": "ifi-zen-dac-v2",
+    "brand": "iFi",
+    "model": "ZEN DAC V2",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 113,
+    "max_power_mw_32ohm": 330,
+    "has_eq_impact": false
+  },
+  {
+    "id": "ifi-zen-dac-3",
+    "brand": "iFi",
+    "model": "ZEN DAC 3",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 113,
+    "max_power_mw_32ohm": 390,
+    "has_eq_impact": false
+  },
+  {
+    "id": "ifi-zen-can",
+    "brand": "iFi",
+    "model": "ZEN CAN",
+    "type": "Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 120,
+    "max_power_mw_32ohm": 1600,
+    "has_eq_impact": false
+  },
+  {
+    "id": "ifi-hip-dac-3",
+    "brand": "iFi",
+    "model": "Hip-DAC 3",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 109,
+    "max_power_mw_32ohm": 400,
+    "has_eq_impact": false
+  },
+  {
+    "id": "ifi-micro-idsd-signature",
+    "brand": "iFi",
+    "model": "Micro iDSD Signature",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 117,
+    "max_power_mw_32ohm": 4100,
+    "has_eq_impact": false
+  },
+  {
+    "id": "ifi-go-bar",
+    "brand": "iFi",
+    "model": "GO bar",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 132,
+    "max_power_mw_32ohm": 475,
+    "has_eq_impact": false
+  },
+  {
+    "id": "ifi-neo-idsd-2",
+    "brand": "iFi",
+    "model": "NEO iDSD 2",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 1,
+    "snr_db": 120,
+    "max_power_mw_32ohm": 5551,
+    "has_eq_impact": false
+  },
+  {
+    "id": "audioquest-dragonfly-black",
+    "brand": "AudioQuest",
+    "model": "DragonFly Black",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.6,
+    "snr_db": 105,
+    "max_power_mw_32ohm": 45,
+    "has_eq_impact": false
+  },
+  {
+    "id": "audioquest-dragonfly-red",
+    "brand": "AudioQuest",
+    "model": "DragonFly Red",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.6,
+    "snr_db": 109,
+    "max_power_mw_32ohm": 135,
+    "has_eq_impact": false
+  },
+  {
+    "id": "audioquest-dragonfly-cobalt",
+    "brand": "AudioQuest",
+    "model": "DragonFly Cobalt",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.6,
+    "snr_db": 112,
+    "max_power_mw_32ohm": 135,
+    "has_eq_impact": false
+  },
+  {
+    "id": "violectric-v222",
+    "brand": "Violectric",
+    "model": "HPA V222",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 131,
+    "max_power_mw_32ohm": 3500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "violectric-v281",
+    "brand": "Violectric",
+    "model": "HPA V281",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 129,
+    "max_power_mw_32ohm": 4200,
+    "has_eq_impact": false
+  },
+  {
+    "id": "violectric-v380-pro",
+    "brand": "Violectric",
+    "model": "DHA V380 Pro",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 130,
+    "max_power_mw_32ohm": 5000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "lake-people-g103-s-mk2",
+    "brand": "Lake People",
+    "model": "G103-S MKII",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 122,
+    "max_power_mw_32ohm": 1250,
+    "has_eq_impact": false
+  },
+  {
+    "id": "rme-adi-2-dac-fs",
+    "brand": "RME",
+    "model": "ADI-2 DAC FS",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 123,
+    "max_power_mw_32ohm": 1500,
+    "has_eq_impact": false
+  },
+  {
+    "id": "rme-adi-2-pro-fs-r",
+    "brand": "RME",
+    "model": "ADI-2 Pro FS R BE",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 124,
+    "max_power_mw_32ohm": 2900,
+    "has_eq_impact": false
+  },
+  {
+    "id": "rme-babyface-pro-fs",
+    "brand": "RME",
+    "model": "Babyface Pro FS",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 118,
+    "max_power_mw_32ohm": 90,
+    "has_eq_impact": false
+  },
+  {
+    "id": "geshelli-j2-s",
+    "brand": "Geshelli",
+    "model": "JNOG2 (J2S)",
+    "type": "DAC",
+    "output_impedance_ohms": 50,
+    "snr_db": 125,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "geshelli-archel-2-pro",
+    "brand": "Geshelli",
+    "model": "Archel2 Pro",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 130,
+    "max_power_mw_32ohm": 1000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "geshelli-dayton",
+    "brand": "Geshelli",
+    "model": "Dayton",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 132,
+    "max_power_mw_32ohm": 3000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "singxer-sda-6-pro",
+    "brand": "Singxer",
+    "model": "SDA-6 Pro",
+    "type": "DAC",
+    "output_impedance_ohms": 20,
+    "snr_db": 131,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "singxer-sa-1",
+    "brand": "Singxer",
+    "model": "SA-1",
+    "type": "Amp",
+    "output_impedance_ohms": 1.4,
+    "snr_db": 147,
+    "max_power_mw_32ohm": 6480,
+    "has_eq_impact": false
+  },
+  {
+    "id": "monolith-thx-887",
+    "brand": "Monoprice",
+    "model": "Monolith THX AAA 887",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 140,
+    "max_power_mw_32ohm": 6000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "monolith-desktop-thx",
+    "brand": "Monoprice",
+    "model": "Monolith Desktop DAC/Amp THX",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.5,
+    "snr_db": 125,
+    "max_power_mw_32ohm": 2000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "benchmark-dac3-b",
+    "brand": "Benchmark",
+    "model": "DAC3 B",
+    "type": "DAC",
+    "output_impedance_ohms": 60,
+    "snr_db": 128,
+    "max_power_mw_32ohm": 0,
+    "has_eq_impact": false
+  },
+  {
+    "id": "benchmark-hpa4",
+    "brand": "Benchmark",
+    "model": "HPA4",
+    "type": "Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 135,
+    "max_power_mw_32ohm": 6000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "spl-phonitor-xe",
+    "brand": "SPL",
+    "model": "Phonitor xe",
+    "type": "Amp",
+    "output_impedance_ohms": 0.18,
+    "snr_db": 135,
+    "max_power_mw_32ohm": 2700,
+    "has_eq_impact": false
+  },
+  {
+    "id": "spl-phonitor-2",
+    "brand": "SPL",
+    "model": "Phonitor 2",
+    "type": "Amp",
+    "output_impedance_ohms": 0.18,
+    "snr_db": 134,
+    "max_power_mw_32ohm": 2700,
+    "has_eq_impact": false
+  },
+  {
+    "id": "cayin-ru7",
+    "brand": "Cayin",
+    "model": "RU7 (1-Bit R2R)",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.6,
+    "snr_db": 114,
+    "max_power_mw_32ohm": 400,
+    "has_eq_impact": false
+  },
+  {
+    "id": "cayin-ha-1a-mk2",
+    "brand": "Cayin",
+    "model": "HA-1A MK2 (Valvolare)",
+    "type": "Amp",
+    "output_impedance_ohms": 8,
+    "snr_db": 100,
+    "max_power_mw_32ohm": 2200,
+    "has_eq_impact": false
+  },
+  {
+    "id": "cayin-iha-6",
+    "brand": "Cayin",
+    "model": "iHA-6",
+    "type": "Amp",
+    "output_impedance_ohms": 0.3,
+    "snr_db": 133,
+    "max_power_mw_32ohm": 7000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "shanling-ua4",
+    "brand": "Shanling",
+    "model": "UA4",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.5,
+    "snr_db": 120,
+    "max_power_mw_32ohm": 227,
+    "has_eq_impact": false
+  },
+  {
+    "id": "xduoo-ta-22",
+    "brand": "xDuoo",
+    "model": "TA-22 (Ibrido)",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.5,
+    "snr_db": 118,
+    "max_power_mw_32ohm": 3000,
+    "has_eq_impact": false
+  },
+  {
+    "id": "e1da-9038d",
+    "brand": "E1DA",
+    "model": "9038D6k",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 126,
+    "max_power_mw_32ohm": 200,
+    "has_eq_impact": false
+  },
+  {
+    "id": "questyle-m15",
+    "brand": "Questyle",
+    "model": "M15 (Current Mode)",
+    "type": "DAC/Amp",
+    "output_impedance_ohms": 0.1,
+    "snr_db": 130,
+    "max_power_mw_32ohm": 300,
+    "has_eq_impact": false
+  }
+]

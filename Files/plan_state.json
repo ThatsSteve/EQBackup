@@ -1,0 +1,15 @@
+{
+  "plan_version": "1.0",
+  "current_phase": 0,
+  "phases": {
+    "0": { "title": "Governance & tooling", "status": "ready", "attempts": 0, "last_security": null, "last_qa": null },
+    "1": { "title": "Stabilizzazione critica", "status": "pending", "attempts": 0, "last_security": null, "last_qa": null },
+    "2": { "title": "Layer astrazione provider IA (backend)", "status": "pending", "attempts": 0, "last_security": null, "last_qa": null },
+    "3": { "title": "Onboarding Configura la tua IA (frontend)", "status": "pending", "attempts": 0, "last_security": null, "last_qa": null },
+    "4": { "title": "Design system & rifattorizzazione frontend", "status": "pending", "attempts": 0, "last_security": null, "last_qa": null },
+    "5": { "title": "Redesign wizard + player A/B", "status": "pending", "attempts": 0, "last_security": null, "last_qa": null },
+    "6": { "title": "Chat IA persistente e seamless", "status": "pending", "attempts": 0, "last_security": null, "last_qa": null },
+    "7": { "title": "Hardening finale & pre-pubblicazione", "status": "pending", "attempts": 0, "last_security": null, "last_qa": null }
+  },
+  "notes": []
+}
