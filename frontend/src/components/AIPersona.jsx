@@ -1,28 +1,34 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, User, X } from 'lucide-react';
-import { apiPost } from '../api/client';
+import { Bot, Send, User, X, Trash2 } from 'lucide-react';
+import { apiChatStream } from '../api/client';
+import { EqProposalCard } from './chat/EqProposalCard';
 
 /**
  * AIPersona.jsx — Chat concierge (estratto identico da App.jsx:421-654, pre-Fase 4).
  * Interface props invariata: state, dispatch, setEqData, setExportRawData,
  * engineStatus, isMobileChatOpen, setIsMobileChatOpen, activeLevel3Form,
  * setActiveLevel3Form, manualSpecs, setManualSpecs, setHwStatus, isLiveSyncEnabled.
- * Hidden su state.step === 0; messaggi contestuali sugli step 1-4; tutorOptions.
- * L'unica differenza dal monolite: fetch /api/chat via apiPost (host/header/body identici).
+ * Fase 6: visibile su TUTTI gli step; streaming SSE via /api/chat/stream;
+ * contesto strutturato (step + filtri EQ live); proposte EQ come diff
+ * accettabile/rifiutabile, MAI applicate in automatico.
  */
-export function AIPersona({ state, dispatch, setEqData, setExportRawData, engineStatus, isMobileChatOpen, setIsMobileChatOpen, _activeLevel3Form, setActiveLevel3Form, _manualSpecs, _setManualSpecs, setHwStatus, isLiveSyncEnabled }) {
+export function AIPersona({ state, dispatch, setEqData, setExportRawData, engineStatus, isMobileChatOpen, setIsMobileChatOpen, _activeLevel3Form, setActiveLevel3Form, _manualSpecs, _setManualSpecs, setHwStatus, isLiveSyncEnabled, eqData }) {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [liveText, setLiveText] = useState("");
+  const [pendingProposal, setPendingProposal] = useState(null);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [state.chatHistory]);
+  }, [state.chatHistory, liveText]);
 
   useEffect(() => {
     let contextMsg = "";
-    if (state.step === 1) {
+    if (state.step === 0) {
+      contextMsg = "Ciao! Scegli la modalità di configurazione per iniziare la calibrazione del tuo impianto.";
+    } else if (state.step === 1) {
       if (state.headphone.toLowerCase().includes('hd800') || state.headphone.toLowerCase().includes('hd 800')) {
         contextMsg = "Ah, le mitiche HD800! Un soundstage imbattibile. Andremo a domare quel picco fastidioso sui 6kHz per renderle perfette.";
       } else if (state.dac.toLowerCase().includes('chord') || state.dac.toLowerCase().includes('hugo')) {
@@ -51,47 +57,45 @@ export function AIPersona({ state, dispatch, setEqData, setExportRawData, engine
 
     const userMessage = inputValue.trim();
     setInputValue("");
+    setLiveText("");
+    setPendingProposal(null);
 
     dispatch({ type: 'APPEND_CHAT', payload: { role: 'user', content: userMessage } });
     setIsTyping(true);
 
     try {
-        const response = await apiPost('/api/chat', {
+        await apiChatStream({
             message: userMessage,
             chatHistory: state.chatHistory,
-            aiPayload: state,
+            aiPayload: { ...state, currentFilters: (eqData && eqData.filters) ? eqData.filters : [] },
             destination: isLiveSyncEnabled ? 'e-apo' : 'export'
+        }, {
+            onDelta: (text) => setLiveText((prev) => prev + text),
+            onDone: (evt) => {
+                const cleanReply = typeof evt.reply === 'string' ? evt.reply : '';
+                dispatch({ type: 'APPEND_CHAT', payload: { role: 'ai', content: cleanReply } });
+            },
+            onProposal: (proposal) => {
+                if (proposal && proposal.filters && Array.isArray(proposal.filters) && proposal.filters.length > 0) {
+                    setPendingProposal(proposal);
+                }
+            },
+            onError: (msg) => {
+                dispatch({ type: 'APPEND_CHAT', payload: { role: 'ai', content: typeof msg === 'string' && msg.trim() ? msg : "Scusa, ho avuto un problema di connessione ai miei circuiti logici." } });
+            }
         });
-
-        const data = await response.json();
-
-        if (data.success) {
-             let cleanReply = data.reply;
-             if (typeof cleanReply === 'string' && cleanReply.trim().startsWith('{')) {
-                 try {
-                     const parsedReply = JSON.parse(cleanReply);
-                     if (parsedReply.message) cleanReply = parsedReply.message;
-                 } catch {}
-             }
-
-             dispatch({ type: 'APPEND_CHAT', payload: { role: 'ai', content: cleanReply } });
-             if (data.payload && setEqData) {
-                 setEqData(data.payload);
-             }
-             if (data.fileContent && setExportRawData) {
-                 setExportRawData(data.fileContent);
-             }
-        } else {
-             dispatch({ type: 'APPEND_CHAT', payload: { role: 'ai', content: "Scusa, ho avuto un problema di connessione ai miei circuiti logici." } });
-        }
     } catch {
         dispatch({ type: 'APPEND_CHAT', payload: { role: 'ai', content: "Errore di rete con il server locale." } });
     } finally {
         setIsTyping(false);
+        setLiveText("");
     }
   };
 
-  if (state.step === 0) return null;
+  const handleClearChat = () => {
+    dispatch({ type: 'CLEAR_CHAT' });
+    setPendingProposal(null);
+  };
 
   return (
     <div className={`sidebar-concierge ${isMobileChatOpen ? 'mobile-open' : ''}`}>
@@ -105,9 +109,14 @@ export function AIPersona({ state, dispatch, setEqData, setExportRawData, engine
                 <h3 style={{margin: 0, color: 'white', fontSize: '1.1rem'}}>Personal EQ Concierge</h3>
              </div>
 
+             <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+             <button className="mobile-close-btn" onClick={handleClearChat} title="Pulisci cronologia chat" aria-label="Pulisci cronologia chat">
+                <Trash2 size={18} color="var(--text-muted)" />
+             </button>
              <button className="mobile-close-btn" onClick={() => setIsMobileChatOpen(false)}>
                 <X size={20} color="var(--text-muted)" />
              </button>
+           </div>
            </div>
 
            <div style={{
@@ -211,8 +220,22 @@ export function AIPersona({ state, dispatch, setEqData, setExportRawData, engine
                  className="chat-message ai"
              >
                  <div className="chat-avatar"><Bot size={16} color="#ff3366" /></div>
-                 <div className="chat-bubble" style={{fontStyle: 'italic', opacity: 0.7}}>Sta elaborando...</div>
+                 <div className="chat-bubble" style={{fontStyle: 'italic', opacity: 0.7}}>
+                    {liveText ? liveText : 'Sta elaborando...'}
+                 </div>
              </motion.div>
+         )}
+         {pendingProposal && (
+            <EqProposalCard
+               currentFilters={(eqData && eqData.filters) ? eqData.filters : []}
+               proposal={pendingProposal}
+               onAccept={(nextFilters) => {
+                   if (setEqData && nextFilters) {
+                       setEqData({ ...pendingProposal, filters: nextFilters });
+                   }
+               }}
+               onReject={() => setPendingProposal(null)}
+            />
          )}
          </AnimatePresence>
          <div ref={chatEndRef} />

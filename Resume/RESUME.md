@@ -1,6 +1,6 @@
 # RESUME — Personal EQ: contesto generale e istruzioni per riprendere
 
-> Data snapshot: 2026-08-18 · Stato: **Fasi 0-5 DONE (gate verifier PASS)** · Fase corrente: **6 (ready)**
+> Data snapshot: 2026-08-18 · Stato: **Fasi 0-6 DONE (gate verifier PASS)** · Fase corrente: **7 (ready)**
 > Questo documento vive in `Resume/RESUME.md` ed è la prima cosa da leggere per riprendere il lavoro.
 
 ---
@@ -35,11 +35,11 @@ per i 6 intenti timbrici, con fallback deterministico sempre attivo.
 | 2 | Layer astrazione provider IA (backend) | done | PASS |
 | 3 | Onboarding "Configura la tua IA" (frontend) | done | PASS |
 | 4 | Design system & rifattorizzazione frontend | done | PASS |
-| 5 | Redesign wizard + player A/B | **done** | **PASS** |
-| 6 | Chat IA persistente e seamless | **ready** | — |
-| 7 | Hardening finale & pre-pubblicazione | pending | — |
+| 5 | Redesign wizard + player A/B | done | PASS |
+| 6 | Chat IA persistente e seamless | **done** | **PASS** |
+| 7 | Hardening finale & pre-pubblicazione | **ready** | — |
 
-`current_phase = 6`. Prossima azione = eseguire la **Fase 6**.
+`current_phase = 7`. Prossima azione = eseguire la **Fase 7**.
 
 ---
 
@@ -101,6 +101,30 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
 - **Nota di processo**: il primo tentativo orchestrato (dev agent in CLI) ha fallito 2 volte con
   diff vuoto (fase `blocked`); sbloccata facendo il dev **in sessione principale** — confermato
   come modalità standard per i moduli free-tier.
+
+---
+
+## 3ter. Cosa è la Fase 6 e com'è finita (riassunto per continuità)
+
+- **Chat multi-turn e provider-agnostica (DoD)**: `buildMessages` ora accetta la
+  cronologia (max 10 turni, soli ruoli user/assistant, contenuti validati) e il
+  contesto strutturato del wizard (`currentState`: step corrente + filtri EQ live),
+  delimitato nel system prompt. Stesso contratto SSE per tier 1/2 e fallback
+  locale → stessa UX con qualunque provider di Fase 3.
+- **Streaming SSE (`/api/chat/stream`)**: eventi `delta` → `done` (subito) → evento
+  `proposal` separato con la proposta calcolata (filtri + preamp). **Mai applicata
+  in automatico**: lo stream NON scrive il file E-APO (a differenza di `/api/chat`
+  legacy usato dal pulsante esplicito "AI parametrico" allo Step 4).
+- **Frontend**: `apiChatStream` (fetch SSE su POST, EventSource non basta);
+  `AIPersona` visibile su TUTTI gli step (anche Welcome) con testo streaming live
+  e FAB mobile sempre attivo; proposta EQ mostrata da `EqProposalCard` come diff
+  tabellare (filtro, attuale → proposta) con **Applica/Rifiuta**.
+- **Persistenza locale**: `utils/chatPersistence.js` (puro, testabile) +
+  `EqStateProvider` (load all'init, save debounced 400ms, sync cross-tab via
+  `storage` event) + azione `CLEAR_CHAT` (pulsante cestino nell'header chat).
+- **Verifica**: 72 backend + 137 frontend verdi (18 test nuovi), build Vite OK,
+  lint 0 errori, E2E curl `delta → done → proposal` con filtri reali, gate
+  `verifier` PASS (`implementation/reports/phase-6-verify.md`).
 
 ---
 
@@ -188,24 +212,12 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
 - Fatto: fix AudioPlayerAB (3 bug), design-tokens su tutti gli step, EqCurveTable (vista
   tabellare WCAG 2.1 AA). Dettagli nella sezione 3bis.
 
-### FASE 6 — Chat IA persistente e seamless (`ready`, la prossima)
-- Applicare il design system (design-tokens) a tutti gli step.
-- Fix bug noti del player `AudioPlayerAB.jsx` (ora IN SCOPE):
-  - `biquadNodesRef` mai popolato in modalità parametrica;
-  - doppio volume (`audioEl.volume` + `masterGain`);
-  - RAF loop senza cleanup a fine brano.
-- Grafici Recharts con vista tabellare alternativa accessibile.
-- Criteri: slider parametrici modificano l'audio in tempo reale; nessun leak di CPU
-  dopo 5 minuti di riproduzione continua. Accessibilità WCAG 2.1 AA.
+### FASE 6 — Chat IA persistente e seamless (`done`, gate verifier PASS)
+- Fatto: chat multi-turn provider-agnostica (SSE delta/done/proposal), contesto
+  wizard strutturato, proposta EQ come diff Applica/Rifiuta (mai automatica),
+  cronologia persistita in localStorage. Dettagli nella sezione 3ter.
 
-### FASE 6 — Chat IA persistente e seamless
-- Pannello dockable desktop / bottom-sheet mobile su tutti gli step (già presente
-  `AIPersona`/`mobile-chat-fab` come base).
-- Contesto corrente del wizard passato al provider attivo; proposte EQ come diff
-  accettabile/rifiutabile (mai applicate in automatico); cronologia persistita.
-- SSE `/api/chat/stream` già pronto lato backend (Fase 2).
-
-### FASE 7 — Hardening finale & pre-pubblicazione
+### FASE 7 — Hardening finale & pre-pubblicazione (`ready`, la prossima)
 - Error handler JSON globale, try/catch su `/api/resolve-artist`, CORS ristretto,
   rate-limit sugli endpoint verso terzi; User-Agent reale MusicBrainz; `estimated: true`
   per dati hardware stimati; rimuovere feature dichiarate ma non implementate (CSV/TMQ, OCR);

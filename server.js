@@ -316,14 +316,20 @@ function buildStructuredPayload(aiPayload) {
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message, aiPayload, destination } = req.body;
+    const { message, aiPayload, destination, chatHistory } = req.body;
     const structuredPayload = buildStructuredPayload(aiPayload || {});
+
+    // Contesto strutturato corrente (Fase 6): step del wizard + filtri EQ live.
+    const currentState = {
+      step: aiPayload?.step,
+      currentFilters: Array.isArray(aiPayload?.currentFilters) ? aiPayload.currentFilters : []
+    };
 
     // Otteniamo il profilo base hardware (come fa /api/eq)
     const baseProfile = await fetchHeadphoneProfile(structuredPayload.hardware.headphone, structuredPayload.musicalIdentity.targetCurve, structuredPayload.uploadedData);
 
     // 1. Genera filtri tramite Grafo + provider IA (profilo attivo se presente)
-    const aiResult = await generateAIFilters(structuredPayload, message);
+    const aiResult = await generateAIFilters(structuredPayload, message, undefined, chatHistory || [], currentState);
 
     // 2. Sicurezza Anti-Clipping e PreAmp
     // Passiamo baseProfile per unire la correzione hardware al tuning dell'IA e degli artisti
@@ -426,8 +432,14 @@ app.post('/api/ai/profiles/:id/activate', async (req, res) => {
 // Nessun profilo attivo o provider tier 3 → fallback deterministico, MAI
 // errore bloccante. Chiusura pulita su req.on('close') con abort del fetch.
 app.post('/api/chat/stream', async (req, res) => {
-  const { message = '', aiPayload = {} } = req.body || {};
+  const { message = '', aiPayload = {}, chatHistory = [], destination = 'e-apo' } = req.body || {};
   const structuredPayload = buildStructuredPayload(aiPayload || {});
+
+  // Contesto strutturato corrente (Fase 6): step del wizard + filtri EQ live.
+  const currentState = {
+    step: aiPayload.step,
+    currentFilters: Array.isArray(aiPayload.currentFilters) ? aiPayload.currentFilters : []
+  };
 
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -452,11 +464,15 @@ app.post('/api/chat/stream', async (req, res) => {
     const { graphFilters, extractedFacts, foundArtists } = await queryAudioGraph(structuredPayload, message);
     // Sanitizzazione web-derived prima della composizione dei messages.
     const safeFacts = sanitizePromptData(extractedFacts).slice(0, 8);
-    const chatMessages = buildMessages(structuredPayload, message, safeFacts);
+    const chatMessages = buildMessages(structuredPayload, message, safeFacts, chatHistory, currentState);
 
     const activeProfile = await aiRegistry.getActiveProfile();
     const adapter = await aiRegistry.getActiveAdapter();
     const useActiveProvider = Boolean(activeProfile) && (activeProfile.tier === 1 || activeProfile.tier === 2) && Boolean(adapter);
+
+    let finalReply = '';
+    let finalDesiderata = null;
+    let finalTier = 'local-graph';
 
     if (useActiveProvider) {
       const generator = await adapter.chat({
@@ -470,20 +486,43 @@ app.post('/api/chat/stream', async (req, res) => {
         if (evt.type === 'delta') {
           send({ type: 'delta', text: evt.text });
         } else if (evt.type === 'done') {
-          send({ type: 'done', reply: evt.parsed ? evt.parsed.message : '', desiderata: evt.parsed ? evt.parsed.desiderata : null, tier: evt.tier });
+          finalReply = evt.parsed ? evt.parsed.message : '';
+          finalDesiderata = evt.parsed ? evt.parsed.desiderata : null;
+          finalTier = evt.tier;
         } else if (evt.type === 'error') {
           send({ type: 'error', message: evt.message });
         }
       }
     } else {
       // Fallback deterministico: nessun profilo attivo o provider inaffidabile.
-      const localDesiderata = calculateWeightedArtistProfile(foundArtists);
-      const reply = "[Modalità Locale] Nessun profilo AI attivo o provider inaffidabile. Applicate le regole deterministiche dal Grafo Acustico.";
-      send({ type: 'delta', text: reply });
-      send({ type: 'done', reply, desiderata: localDesiderata, tier: 'local-graph' });
+      finalDesiderata = calculateWeightedArtistProfile(foundArtists);
+      finalReply = "[Modalità Locale] Nessun profilo AI attivo o provider inaffidabile. Applicate le regole deterministiche dal Grafo Acustico.";
+      send({ type: 'delta', text: finalReply });
+    }
+
+    // done SEMPRE subito (contratto SSE invariato); la proposta di modifica
+    // EQ arriva come evento separato e NON viene MAI applicata in automatico
+    // (Fase 6: il frontend la mostra come diff accettabile/rifiutabile).
+    // Nota: NODE 16+ emette 'close' sul request quando il body è stato letto
+    // (non solo su disconnect), quindi NON usare `aborted` qui — solo la
+    // guardia res.destroyed evita errori su connessione davvero chiusa.
+    if (!res.destroyed) send({ type: 'done', reply: finalReply, desiderata: finalDesiderata, tier: finalTier });
+
+    try {
+      const baseProfile = await fetchHeadphoneProfile(structuredPayload.hardware.headphone, structuredPayload.musicalIdentity.targetCurve, structuredPayload.uploadedData);
+      const proposal = mergeAndSecureFilters(
+        baseProfile,
+        graphFilters.slice(0, 12),
+        finalDesiderata || {},
+        structuredPayload.listening_preferences,
+        foundArtists || []
+      );
+      if (!res.destroyed) send({ type: 'proposal', proposal });
+    } catch (err) {
+      // Proposta opzionale: se non calcolabile la chat resta funzionale.
     }
   } catch (err) {
-    if (!aborted) send({ type: 'error', message: "Errore durante l'elaborazione della richiesta." });
+    if (!res.destroyed) send({ type: 'error', message: "Errore durante l'elaborazione della richiesta." });
   } finally {
     clearInterval(heartbeat);
     controller.abort();

@@ -143,6 +143,7 @@ function AppContent() {
         <AIPersona
           state={state}
           dispatch={dispatch}
+          eqData={eqData}
           setEqData={setEqData}
           setExportRawData={setExportRawData}
           engineStatus={engineStatus}
@@ -156,14 +157,12 @@ function AppContent() {
           isLiveSyncEnabled={isLiveSyncEnabled}
         />
 
-        {state.step > 0 && (
-          <button className="mobile-chat-fab" onClick={() => setIsMobileChatOpen(true)}>
+        <button className="mobile-chat-fab" onClick={() => setIsMobileChatOpen(true)}>
               <MessageSquare size={24} color="#ffffff" />
               {state.chatHistory.length > 0 && state.chatHistory[state.chatHistory.length-1].role === 'ai' && (
                   <div className="fab-badge">1</div>
               )}
           </button>
-        )}
       </div>
     </>
   );

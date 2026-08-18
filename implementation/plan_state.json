@@ -1,9 +1,9 @@
 ﻿{
     "plan_version":  "2.0",
-    "current_phase":  6,
-    "heartbeat":  "2026-08-18T11:17:51.112Z",
+    "current_phase":  7,
+    "heartbeat":  "2026-08-18T11:42:48.269Z",
     "current_step":  "in attesa di avvio",
-    "step_count_this_phase":  3,
+    "step_count_this_phase":  4,
     "phases":  {
                    "0":  {
                              "title":  "Governance \u0026 tooling",
@@ -43,13 +43,13 @@
                          },
                    "6":  {
                              "title":  "Chat IA persistente e seamless",
-                             "status":  "ready",
+                             "status":  "done",
                              "attempts":  0,
-                             "last_verify":  null
+                             "last_verify":  "PASS"
                          },
                    "7":  {
                              "title":  "Hardening finale \u0026 pre-pubblicazione",
-                             "status":  "pending",
+                             "status":  "ready",
                              "attempts":  0,
                              "last_verify":  null
                          }
@@ -89,6 +89,11 @@
                       "date":  "2026-08-18",
                       "phase":  5,
                       "summary":  "Fase 5 completata: fix AudioPlayerAB (biquadNodesRef popolato in parametrica, doppio volume eliminato, RAF loop cleanup a fine brano), design-tokens applicati a tutti gli step (9 file), EqCurveTable.jsx vista tabellare accessibile per i grafici Recharts (WCAG 2.1 AA); 65+126 test verdi, build OK, lint 0 errori, gate verifier PASS. Esito passato da blocked (2 tentativi dev agent falliti) a done dopo dev in sessione principale."
+                  },
+                  {
+                      "date":  "2026-08-18",
+                      "phase":  6,
+                      "summary":  "Fase 6 completata: chat multi-turn via SSE /api/chat/stream (delta/done + evento proposal separato, proposta MAI applicata in automatico), buildMessages con chatHistory (max 10 turni) + contesto strutturato del wizard nel system prompt, persistenza chat in localStorage (debounce, cross-tab, CLEAR_CHAT), EqProposalCard diff accettabile/rifiutabile, AIPersona visibile su tutti gli step + FAB mobile sempre attivo; 72+137 test verdi, build OK, lint 0 errori, gate verifier PASS, E2E curl delta-\u003edone-\u003eproposal verificato."
                   }
               ]
 }

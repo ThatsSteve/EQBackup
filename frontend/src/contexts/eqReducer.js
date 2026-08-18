@@ -71,7 +71,14 @@ export function reducer(state, action) {
                : [...state.selectedArtists, action.payload]
        };
     case 'APPEND_CHAT':
-       return { ...state, chatHistory: [...state.chatHistory, action.payload] };
+       return { ...state, chatHistory: [...state.chatHistory, action.payload].slice(-100) };
+    case 'CLEAR_CHAT':
+       return { ...state, chatHistory: [] };
+    case 'RELOAD_CHAT':
+       return {
+         ...state,
+         chatHistory: Array.isArray(action.payload) ? action.payload : state.chatHistory
+       };
     default: return state;
   }
 }
