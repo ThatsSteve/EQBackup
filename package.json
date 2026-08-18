@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run && npm --prefix frontend test",
     "sync-autoeq": "node engine/autoeqDownloader.js",
     "sync-dacamp": "node engine/syncDacAmp.js",
     "ingest-artists": "node scripts/ingestArtists.js",
-    "test-artist-incidence": "node scripts/testArtistIncidence.js"
+    "test-artist-incidence": "node scripts/testArtistIncidence.js",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +18,10 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.10"
   }
 }

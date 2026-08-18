@@ -1,0 +1,316 @@
+/* OnboardingAiStep.css — Fase 3: stile scoped al solo componente IA.
+   Riusa le classi esistenti di index.css (glass-panel, step-container,
+   option-card, input-group, input-label, btn-primary, btn-secondary,
+   error-text). Qui solo ciò che non è coperto da quelle classi. */
+
+/* Pannello contenitore: stessa carta del wizard (main-wizard) ma con il
+   proprio scroll interno, senza toccare le classi del monolite. */
+.aionb-panel {
+  width: 100%;
+  max-width: 960px;
+  max-height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: rgba(14, 16, 22, 0.85);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  overflow: hidden;
+}
+
+.aionb-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 32px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Carte opzione: riuso di .option-card ma come <button> (reset di default). */
+.aionb-option-card {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-align: center;
+  width: 100%;
+}
+
+.aionb-option-card:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.aionb-option-icon {
+  font-size: 1.8rem;
+}
+
+/* Griglia quick-start (provider) */
+.aionb-quickstart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  width: 100%;
+  margin: 1rem 0 1.4rem;
+}
+
+.aionb-code {
+  font-size: 0.72rem;
+  font-family: monospace;
+  color: #9bd3e8;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 4px 8px;
+  word-break: break-all;
+  display: inline-block;
+}
+
+/* Card form e card profilo salvato */
+.aionb-form-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 20px;
+  margin: 18px 0;
+}
+
+.aionb-form-card h3 {
+  margin: 0 0 14px 0;
+  color: #fff;
+  font-size: 1.05rem;
+}
+
+.aionb-form .input-group {
+  margin-bottom: 14px;
+}
+
+.aionb-form .hardware-input {
+  font-size: 0.95rem;
+}
+
+/* Badge tier: testo + colore (il colore non è l'unico canale, WCAG 1.4.1) */
+.aionb-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 1px solid transparent;
+}
+
+.aionb-tier-1 {
+  color: #04140a;
+  background: #00ff87;
+  border-color: #00ff87;
+}
+
+.aionb-tier-2 {
+  color: #1a1400;
+  background: #ffd166;
+  border-color: #ffd166;
+}
+
+.aionb-tier-3 {
+  color: #fff;
+  background: #ff4757;
+  border-color: #ff4757;
+}
+
+.aionb-tier-0 {
+  color: #e2e8f0;
+  background: rgba(148, 163, 184, 0.15);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+/* Nota tier esplicativa inline */
+.aionb-tier-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Card profilo salvato */
+.aionb-saved-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.aionb-muted {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 4px 0;
+}
+
+.aionb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Lista profili (modalità gestione) */
+.aionb-profile-list {
+  list-style: none;
+  margin: 0 0 1.4rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.aionb-profile-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.aionb-profile-row.active {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.12);
+}
+
+.aionb-profile-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.aionb-profile-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aionb-active-mark {
+  color: #00ff87;
+  font-size: 1rem;
+}
+
+.aionb-profile-type {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #9bd3e8;
+  background: rgba(59, 130, 246, 0.15);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.aionb-profile-model {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.aionb-profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.aionb-section-title {
+  font-size: 1.05rem;
+  color: #fff;
+  margin: 1.2rem 0 0.8rem;
+}
+
+.aionb-empty {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 1rem;
+}
+
+/* Banner esistente (onboarding: profilo già attivo) */
+.aionb-existing {
+  background: rgba(0, 255, 135, 0.08);
+  border: 1px solid rgba(0, 255, 135, 0.35);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.92rem;
+  color: #d1fae5;
+}
+
+.aionb-info {
+  font-size: 0.9rem;
+  color: #9bd3e8;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 1rem 0;
+}
+
+/* Spinner CSS puro (niente animazioni libreria nel componente) */
+.aionb-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  vertical-align: -2px;
+  margin-right: 6px;
+  animation: aionb-spin 0.8s linear infinite;
+}
+
+@keyframes aionb-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Accessibilità: focus visibile per tutti i controlli del componente */
+.aionb-panel button:focus-visible,
+.aionb-panel input:focus-visible,
+.aionb-panel select:focus-visible {
+  outline: 2px solid #00f0ff;
+  outline-offset: 2px;
+}
+
+/* prefers-reduced-motion: nessuna animazione superflua */
+@media (prefers-reduced-motion: reduce) {
+  .aionb-spinner {
+    animation: none;
+  }
+  .aionb-panel,
+  .aionb-option-card {
+    transition: none;
+  }
+}
+
+/* Mobile: padding più compatto */
+@media (max-width: 640px) {
+  .aionb-scroll {
+    padding: 20px 16px;
+  }
+  .aionb-profile-actions {
+    margin-left: 0;
+    width: 100%;
+  }
+}

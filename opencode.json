@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/nemotron-3-ultra-free",
+  "agent": {
+    "architect-orchestrator": {
+      "model": "opencode/nemotron-3-ultra-free"
+    },
+    "prompt-writer": {
+      "model": "opencode/hy3-free"
+    },
+    "backend-ai-dev": {
+      "model": "opencode/nemotron-3-ultra-free"
+    },
+    "frontend-redesign-dev": {
+      "model": "opencode/nemotron-3-ultra-free"
+    },
+    "security-auditor": {
+      "model": "opencode/hy3-free"
+    },
+    "qa-verifier": {
+      "model": "opencode/hy3-free"
+    }
+  }
+}

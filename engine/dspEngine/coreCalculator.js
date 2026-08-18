@@ -210,14 +210,20 @@ function mergeAndSecureFilters(baseProfile, graphFilters = [], desiderata = {}, 
     // Fonde tutto per il calcolo cumulativo
     const mergedFilters = [...baseFilters, ...extraFilters];
 
-    // Calcolo automatico Preamp anti-clipping
-    const totalMaxGain = calculateMaxCumulativeGain(mergedFilters);
+    // Guardrails psicoacustici su TUTTI i filtri, base AutoEq inclusa (nessuna eccezione)
+    const securedMergedFilters = applyPsychoacousticGuardrails(mergedFilters);
+
+    // Calcolo automatico Preamp anti-clipping sulla curva effettivamente emessa
+    const totalMaxGain = calculateMaxCumulativeGain(securedMergedFilters);
     
     let finalPreamp = basePreamp;
     
     if (totalMaxGain > 0) {
-        // Imposta dB_preamp = -max(0, dB_peak) - 0.2 dB
-        finalPreamp = -totalMaxGain - 0.2;
+        // Combinazione dei due contributi: il preamp anti-clipping (-dB_peak - 0.2 dB)
+        // SI COMBINA con il preamp AutoEq, non lo sostituisce. Il risultato è il più
+        // protettivo dei due (mai meno protettivo del solo preamp AutoEq).
+        const antiClippingPreamp = -totalMaxGain - 0.2;
+        finalPreamp = Math.min(basePreamp, antiClippingPreamp);
         console.log(`[coreCalculator] Rilevato picco cumulativo di +${totalMaxGain.toFixed(2)} dB.`);
         console.log(`[coreCalculator] Preamp finale regolato a ${finalPreamp.toFixed(2)} dB per headroom assoluto.`);
     }
@@ -226,7 +232,7 @@ function mergeAndSecureFilters(baseProfile, graphFilters = [], desiderata = {}, 
 
     return {
         preamp: finalPreamp,
-        filters: mergedFilters,
+        filters: securedMergedFilters,
         metadata: {
             source: 'coreCalculator',
             extraFiltersApplied: extraFilters.length

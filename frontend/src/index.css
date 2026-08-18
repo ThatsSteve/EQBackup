@@ -1,16 +1,8 @@
 /* --- DESIGN SYSTEM & LUXURY AUDIO/AUTOMOTIVE TOKENS --- */
-:root {
-  --bg-dark: #07080a;
-  --bg-panel: rgba(15, 18, 25, 0.85);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --accent-blue: #3b82f6;
-  --accent-blue-glow: rgba(59, 130, 246, 0.45);
-  --accent-cyan: #00f0ff;
-  --accent-cyan-glow: rgba(0, 240, 255, 0.45);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-active: rgba(0, 240, 255, 0.4);
-}
+/* Fase 4: custom properties centralizzate in design-tokens/tokens.css
+   (sorgente di verità: design-tokens/tokens.js). I 10 nomi legacy di :root
+   sono preservati con valori identici come alias in tokens.css. */
+@import './design-tokens/tokens.css';
 
 body {
   margin: 0;

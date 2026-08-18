@@ -5,7 +5,7 @@ const path = require('path');
 
 // --- Import Motore Backend Modulare ---
 const { fetchHeadphoneProfile } = require('./engine/autoeqParser');
-const { generateAIFilters } = require('./engine/aiOrchestrator');
+const { generateAIFilters, buildMessages } = require('./engine/aiOrchestrator');
 const { mergeAndSecureFilters, refineAndSecureFilters, calculateMaxCumulativeGain, testEngineAccuracy } = require('./engine/dspEngine/coreCalculator');
 const { compileOutput } = require('./engine/outputCompiler');
 const { syncAutoEqDb } = require('./engine/autoeqDownloader');
@@ -13,8 +13,25 @@ const { getBrands, getModels, resolveHardware } = require('./engine/hardwareReso
 const presetManager = require('./engine/presetManager');
 const { checkApoPermissions, writeEqFileDebounced } = require('./engine/fileSync');
 
+// --- Import Layer AI (Fase 2): registry provider, probe, schema, sanitizzazione ---
+const { queryAudioGraph } = require('./engine/graphEngine');
+const { calculateWeightedArtistProfile } = require('./engine/dspEngine/genreArtistMatrix');
+const { sanitizePromptData } = require('./engine/ai/promptSanitizer');
+const aiRegistry = require('./engine/ai/registry').defaultRegistry;
+const { probeProvider: capabilityProbe } = require('./engine/ai/capabilityProbe');
+const eqIntentSchema = require('./engine/ai/schema/eqIntentSchema');
+
 const app = express();
 const PORT = 3001;
+
+// --- GIUNTURA FASE 2/3: Profilo IA attivo per il wizard (/api/calculate-eq) ---
+// Fase 1: il wizard usa il motore deterministico locale (Grafo di Conoscenza),
+// calcolo istantaneo quando non c'è messaggio utente — comportamento invariato
+// rispetto al pre-refactor. Nelle Fasi 2/3 questa decisione sarà sostituita dal
+// profilo IA selezionato dall'utente; la variabile d'ambiente PEQ_WIZARD_AI_PROFILE
+// permette di cambiarla senza toccare il codice.
+const WIZARD_AI_PROFILE = process.env.PEQ_WIZARD_AI_PROFILE || 'local-graph';
+const skipLMStudioForWizard = WIZARD_AI_PROFILE === 'local-graph';
 
 app.use(cors());
 app.use(express.json());
@@ -148,9 +165,10 @@ app.post('/api/calculate-eq', async (req, res) => {
         const baseProfile = await fetchHeadphoneProfile(AIPayload.hardware.headphone, AIPayload.musicalIdentity.targetCurve, AIPayload.uploadedData);
 
         // 2. Modulo Decisionale AI (Grafo Locale)
-        // In /api/eq (sincronizzazione stato in tempo reale durante il Wizard) utilizziamo sempre il calcolo immediato dal Grafo di Conoscenza
-        const skipLMStudio = true;
-        const aiData = await generateAIFilters(AIPayload, "", skipLMStudio);
+        // In /api/calculate-eq (sincronizzazione stato in tempo reale durante il Wizard)
+        // il bypass di LM Studio è deciso dal profilo IA attivo (giuntura Fase 2/3):
+        // in Fase 1 il valore è 'local-graph' → calcolo deterministico istantaneo.
+        const aiData = await generateAIFilters(AIPayload, "", skipLMStudioForWizard);
 
         // 3. Modulo DSP & Sicurezza Anti-Clipping
         // aiData contiene .graphFilters e .desiderata
@@ -281,26 +299,30 @@ app.post('/api/eq/refine/ai', async (req, res) => {
     }
 });
 
+// Costruzione Payload strutturato unificato per la chat (usato da /api/chat
+// e dal canale SSE /api/chat/stream).
+function buildStructuredPayload(aiPayload) {
+  return {
+    metadata: { timestamp: new Date().toISOString(), version: "3.1-graph-engine", context: "Personal EQ Chat" },
+    hardware: { headphone: aiPayload.headphone || aiPayload.hardware?.headphone || "", dac: aiPayload.dac || aiPayload.hardware?.dac || "", amp: aiPayload.amp || aiPayload.hardware?.amp || "" },
+    uploadedData: aiPayload.uploadedFiles || aiPayload.uploadedData || [],
+    musicalIdentity: { targetCurve: aiPayload.targetCurve, artists: aiPayload.selectedArtists || aiPayload.musicalIdentity?.artists || [], genres: aiPayload.selectedGenres || aiPayload.musicalIdentity?.genres || [] },
+    psychoacoustics: { baseVolume: aiPayload.baseVol, fletcherMunsonThreshold: aiPayload.threshold, tiltBalance: aiPayload.balance, beatPunch: aiPayload.beat },
+    spatial: { soundstage: aiPayload.soundstage },
+    listening_preferences: aiPayload.listeningPreferences || aiPayload.listening_preferences || {},
+    frequencyPreferences: { bass: aiPayload.bass || "neutro", mids: aiPayload.mids || "piatte", treble: aiPayload.treble || "smooth" }
+  };
+}
+
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, aiPayload, destination } = req.body;
-    
-    // Costruiamo un payload strutturato unificato
-    const structuredPayload = {
-      metadata: { timestamp: new Date().toISOString(), version: "3.1-graph-engine", context: "Personal EQ Chat" },
-      hardware: { headphone: aiPayload.headphone || aiPayload.hardware?.headphone || "", dac: aiPayload.dac || aiPayload.hardware?.dac || "", amp: aiPayload.amp || aiPayload.hardware?.amp || "" },
-      uploadedData: aiPayload.uploadedFiles || aiPayload.uploadedData || [],
-      musicalIdentity: { targetCurve: aiPayload.targetCurve, artists: aiPayload.selectedArtists || aiPayload.musicalIdentity?.artists || [], genres: aiPayload.selectedGenres || aiPayload.musicalIdentity?.genres || [] },
-      psychoacoustics: { baseVolume: aiPayload.baseVol, fletcherMunsonThreshold: aiPayload.threshold, tiltBalance: aiPayload.balance, beatPunch: aiPayload.beat },
-      spatial: { soundstage: aiPayload.soundstage },
-      listening_preferences: aiPayload.listeningPreferences || aiPayload.listening_preferences || {},
-      frequencyPreferences: { bass: aiPayload.bass || "neutro", mids: aiPayload.mids || "piatte", treble: aiPayload.treble || "smooth" }
-    };
+    const structuredPayload = buildStructuredPayload(aiPayload || {});
 
     // Otteniamo il profilo base hardware (come fa /api/eq)
     const baseProfile = await fetchHeadphoneProfile(structuredPayload.hardware.headphone, structuredPayload.musicalIdentity.targetCurve, structuredPayload.uploadedData);
 
-    // 1. Genera filtri tramite Grafo + LM Studio (passando messaggio e payload strutturato)
+    // 1. Genera filtri tramite Grafo + provider IA (profilo attivo se presente)
     const aiResult = await generateAIFilters(structuredPayload, message);
 
     // 2. Sicurezza Anti-Clipping e PreAmp
@@ -335,6 +357,140 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// --- API AI PROFILES (Fase 2: layer di astrazione provider IA) ---
+app.post('/api/ai/profiles', async (req, res) => {
+  try {
+    const { name, type, baseUrl, apiKey, model } = req.body || {};
+    if (!name || !String(name).trim()) {
+      return res.status(400).json({ success: false, error: 'Campo "name" obbligatorio.' });
+    }
+    if (!aiRegistry.SUPPORTED_TYPES.includes(type)) {
+      return res.status(400).json({ success: false, error: 'Tipo provider non supportato.' });
+    }
+    const profile = await aiRegistry.createProfile({ name, type, baseUrl, apiKey, model });
+    res.status(201).json({ success: true, profile });
+  } catch (err) {
+    res.status(400).json({ success: false, error: 'Impossibile creare il profilo.' });
+  }
+});
+
+app.get('/api/ai/profiles', async (req, res) => {
+  try {
+    const profiles = await aiRegistry.listProfiles();
+    res.json({ success: true, profiles });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Impossibile leggere i profili.' });
+  }
+});
+
+app.post('/api/ai/profiles/:id/test', async (req, res) => {
+  try {
+    const adapter = await aiRegistry.getAdapter(req.params.id);
+    if (!adapter) {
+      return res.status(404).json({ success: false, error: 'Profilo non trovato.' });
+    }
+    const probe = await capabilityProbe(adapter);
+    res.json({ success: probe.ok, tier: probe.tier, latencyMs: probe.latencyMs, modelName: probe.modelName });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Test del provider non riuscito.' });
+  }
+});
+
+app.post('/api/ai/profiles/:id/activate', async (req, res) => {
+  try {
+    const profile = await aiRegistry.getProfile(req.params.id);
+    if (!profile) {
+      return res.status(404).json({ success: false, error: 'Profilo non trovato.' });
+    }
+    // Probe se non ancora eseguito (tier non assegnato). Non rende mai la
+    // risposta bloccante: un tier 3 resta attivabile (chat conversazionale).
+    if (profile.tier === null || profile.tier === undefined) {
+      const adapter = await aiRegistry.getAdapter(req.params.id);
+      const probe = await capabilityProbe(adapter);
+      await aiRegistry.updateProfile(req.params.id, { tier: probe.tier });
+    }
+    const activated = await aiRegistry.setActiveProfile(req.params.id);
+    res.json({ success: true, profile: activated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Attivazione del profilo non riuscita.' });
+  }
+});
+
+// --- CANALE SSE /api/chat/stream (Fase 2, streaming per la chat Fase 6) ---
+// Scelta progettuale: endpoint SEPARATO da POST /api/chat per non rompere il
+// contratto JSON esistente (App.jsx legge data.reply). Contratto eventi SSE:
+//   data: {"type":"delta","text":"..."}           — delta token-by-token
+//   data: {"type":"done","reply":"...","desiderata":{...},"tier":1|2|"local-graph"}
+//   data: {"type":"error","message":"..."}        — errore sanitizzato
+//   data: {"type":"ping"}                         — heartbeat (15s)
+// Nessun profilo attivo o provider tier 3 → fallback deterministico, MAI
+// errore bloccante. Chiusura pulita su req.on('close') con abort del fetch.
+app.post('/api/chat/stream', async (req, res) => {
+  const { message = '', aiPayload = {} } = req.body || {};
+  const structuredPayload = buildStructuredPayload(aiPayload || {});
+
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache, no-transform',
+    Connection: 'keep-alive',
+    'X-Accel-Buffering': 'no'
+  });
+
+  const send = (event) => {
+    if (!res.writableEnded) res.write(`data: ${JSON.stringify(event)}\n\n`);
+  };
+
+  const heartbeat = setInterval(() => send({ type: 'ping' }), 15000);
+  const controller = new AbortController();
+  let aborted = false;
+  req.on('close', () => {
+    aborted = true;
+    controller.abort();
+  });
+
+  try {
+    const { graphFilters, extractedFacts, foundArtists } = await queryAudioGraph(structuredPayload, message);
+    // Sanitizzazione web-derived prima della composizione dei messages.
+    const safeFacts = sanitizePromptData(extractedFacts).slice(0, 8);
+    const chatMessages = buildMessages(structuredPayload, message, safeFacts);
+
+    const activeProfile = await aiRegistry.getActiveProfile();
+    const adapter = await aiRegistry.getActiveAdapter();
+    const useActiveProvider = Boolean(activeProfile) && (activeProfile.tier === 1 || activeProfile.tier === 2) && Boolean(adapter);
+
+    if (useActiveProvider) {
+      const generator = await adapter.chat({
+        messages: chatMessages,
+        schema: eqIntentSchema,
+        stream: true,
+        signal: controller.signal
+      });
+      for await (const evt of generator) {
+        if (aborted) break;
+        if (evt.type === 'delta') {
+          send({ type: 'delta', text: evt.text });
+        } else if (evt.type === 'done') {
+          send({ type: 'done', reply: evt.parsed ? evt.parsed.message : '', desiderata: evt.parsed ? evt.parsed.desiderata : null, tier: evt.tier });
+        } else if (evt.type === 'error') {
+          send({ type: 'error', message: evt.message });
+        }
+      }
+    } else {
+      // Fallback deterministico: nessun profilo attivo o provider inaffidabile.
+      const localDesiderata = calculateWeightedArtistProfile(foundArtists);
+      const reply = "[Modalità Locale] Nessun profilo AI attivo o provider inaffidabile. Applicate le regole deterministiche dal Grafo Acustico.";
+      send({ type: 'delta', text: reply });
+      send({ type: 'done', reply, desiderata: localDesiderata, tier: 'local-graph' });
+    }
+  } catch (err) {
+    if (!aborted) send({ type: 'error', message: "Errore durante l'elaborazione della richiesta." });
+  } finally {
+    clearInterval(heartbeat);
+    controller.abort();
+    res.end();
+  }
+});
+
 const { resolveArtistOnline } = require('./engine/dspEngine/artistResolver');
 
 app.post('/api/resolve-artist', async (req, res) => {
@@ -349,9 +505,16 @@ app.post('/api/resolve-artist', async (req, res) => {
   }
 });
 
-// Test automatico del motore DSP all'avvio
-testEngineAccuracy();
+// Avvio del server solo quando eseguito direttamente (`node server.js`):
+// in fase di test (require) l'app viene esportata senza listener attivo.
+// Comportamento invariato: stessa porta 3001, bind 127.0.0.1, test motore DSP all'avvio.
+if (require.main === module) {
+    // Test automatico del motore DSP all'avvio
+    testEngineAccuracy();
 
-app.listen(PORT, '127.0.0.1', () => {
-    console.log(`[API] Server in ascolto su http://127.0.0.1:${PORT}`);
-});
+    app.listen(PORT, '127.0.0.1', () => {
+        console.log(`[API] Server in ascolto su http://127.0.0.1:${PORT}`);
+    });
+}
+
+module.exports = app;

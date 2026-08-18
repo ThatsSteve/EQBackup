@@ -46,7 +46,6 @@ function calculateWeightedArtistProfile(artists) {
   const acousticMatrix = getAcousticMatrix();
   const maxArtists = artists.slice(0, 5); // Limita a 5 artisti
   let sum = [0, 0, 0, 0, 0, 0];
-  const processedNames = [];
 
   maxArtists.forEach(artist => {
     const artistName = (artist.name || '').toLowerCase().trim();
@@ -54,10 +53,8 @@ function calculateWeightedArtistProfile(artists) {
 
     if (artistName && acousticMatrix.artists[artistName]) {
       profile = acousticMatrix.artists[artistName];
-      processedNames.push(artist.name);
     } else {
       profile = getProfileForGenre(artist.genres, acousticMatrix);
-      processedNames.push(artist.name || artist.genres.join('/'));
     }
 
     for (let i = 0; i < 6; i++) {
@@ -75,12 +72,9 @@ function calculateWeightedArtistProfile(artists) {
     brilliance_intent: Number((sum[5] / count).toFixed(2))
   };
 
-  // Requisito 2.1: Log nel Terminale di Node.js
-  console.log(`\n[ARTIST ENGINE DIAGNOSTIC]`);
-  console.log(`Artisti Processati: ${JSON.stringify(processedNames)}`);
-  console.log(`Vettore Ponderato Resultante:`);
-  console.log(` - Sub-Bass: ${result.sub_bass_intent > 0 ? '+' : ''}${result.sub_bass_intent} | Mid-Bass: ${result.mid_bass_intent > 0 ? '+' : ''}${result.mid_bass_intent} | Low-Mids: ${result.low_mids_intent > 0 ? '+' : ''}${result.low_mids_intent}`);
-  console.log(` - High-Mids: ${result.high_mids_intent > 0 ? '+' : ''}${result.high_mids_intent} | Presence: ${result.presence_intent > 0 ? '+' : ''}${result.presence_intent} | Brilliance: ${result.brilliance_intent > 0 ? '+' : ''}${result.brilliance_intent}\n`);
+  // Nota sicurezza (Fase 1): i precedenti console.log diagnostici con i nomi
+  // degli artisti in chiaro ([ARTIST ENGINE DIAGNOSTIC]) sono stati RIMOSSI:
+  // giravano a ogni step del wizard senza servire al debug, esponendo dati utente.
 
   return result;
 }

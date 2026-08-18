@@ -8,7 +8,6 @@ permission:
   edit: allow
   bash: allow
   webfetch: allow
-  websearch: allow
   task: deny
 ---
 

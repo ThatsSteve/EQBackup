@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const { mapGenresToAcousticProfile, harmonizeArtistFilters } = require('./dspEngine/genreArtistMatrix');
 
 let graphData = null;
 
@@ -141,6 +140,12 @@ async function queryAudioGraph(payload, userMessage = "") {
     if (matchedArt) {
       extractedFacts.push(`[Grafo Locale] Artista risolto: ${matchedArt.name || matchedArt.id} (Genere: ${matchedArt.genre || 'N/A'}).`);
       foundArtists.push({ name: matchedArt.name || matchedArt.id, genres: (matchedArt.genre || '').split(',').map(s=>s.trim()) });
+
+      // Filtri consigliati per artista: presenti solo nei nodi del grafo locale,
+      // MAI nei nodi creati da ingestion esterna (difensivo: optional chaining).
+      if (Array.isArray(matchedArt.recommended_modifiers) && matchedArt.recommended_modifiers.length > 0) {
+        matchedArt.recommended_modifiers.forEach(modifier => graphFilters.push({ ...modifier }));
+      }
     } else {
       // Ingestion Dinamica da API Esterna (Fallback Automatico)
       const apiData = await fetchArtistFromExternalAPI(artInput);

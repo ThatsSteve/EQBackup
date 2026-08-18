@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+# Hook pre-commit: secret-scanning sui file staged con gitleaks.
+# Il hook DEVE fallire (exit 1) con un messaggio chiaro se lo scanner
+# non e' disponibile: mai passare silenziosamente senza scansione.
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "ERROR: gitleaks non e' installato o non e' nel PATH."
+  echo "Il commit e' stato BLOCCATO: senza secret-scanning non si committa."
+  echo "Installa gitleaks (es. 'winget install gitleaks.gitleaks',"
+  echo "'brew install gitleaks' oppure 'go install github.com/gitleaks/gitleaks/v8@latest')"
+  echo "e riprova il commit."
+  exit 1
+fi
+
+gitleaks protect --staged --verbose

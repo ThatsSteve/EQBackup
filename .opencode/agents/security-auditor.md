@@ -16,7 +16,6 @@ permission:
     "grep *": allow
     "npm audit*": allow
     "npm test*": allow
-    "npm ls*": allow
   webfetch: deny
   websearch: deny
   task: deny
