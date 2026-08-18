@@ -232,6 +232,7 @@ async function searchWebSpecs(query, type = 'headphone') {
     const sens = typeof aiParsed.sensitivity_db_mw === 'number' ? aiParsed.sensitivity_db_mw : 100;
     const arch = aiParsed.architecture || "Open-Back";
     const thd = typeof aiParsed.thd_percentage === 'number' ? aiParsed.thd_percentage : null;
+    const estimated = typeof aiParsed.impedance_ohms !== 'number' || typeof aiParsed.sensitivity_db_mw !== 'number';
 
     console.log(`[HardwareResolver] Specifiche RAG ultimate per '${query}' (${brand}): Impedenza ${imp} Ohm, Sensibilità ${sens} dB, Arch: ${arch}, THD: ${thd || 'N/A'}.`);
     return {
@@ -247,7 +248,8 @@ async function searchWebSpecs(query, type = 'headphone') {
       sensitivity: sens,
       sensitivity_db_mw: sens,
       architecture: arch,
-      thd_percentage: thd
+      thd_percentage: thd,
+      estimated
     };
   } catch (err) {
     console.warn(`[HardwareResolver] Ricerca Web API fallita per '${query}':`, err.message);
@@ -385,12 +387,8 @@ async function resolveHardware(deviceInput, type = 'headphone') {
     const newHardwareNode = {
       ...webSpecs,
       aliases: [webSpecs.id, webSpecs.name.toLowerCase(), queryClean],
-      deficits: [
-        {
-          issue: "compensazione_generica_auto_apprendimento",
-          suggested_filter: { type: "PK", freq: 2000, gain: 1.5, q: 1.0 }
-        }
-      ],
+      deficits: [],
+      estimated: !!webSpecs.estimated,
       source: "online_web_search_auto_learning",
       ingested_at: new Date().toISOString()
     };

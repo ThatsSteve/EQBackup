@@ -1,6 +1,6 @@
 # RESUME — Personal EQ: contesto generale e istruzioni per riprendere
 
-> Data snapshot: 2026-08-18 · Stato: **Fasi 0-6 DONE (gate verifier PASS)** · Fase corrente: **7 (ready)**
+> Data snapshot: 2026-08-18 · Stato: **Fasi 0-7 DONE (gate verifier PASS)** · **Piano completato**
 > Questo documento vive in `Resume/RESUME.md` ed è la prima cosa da leggere per riprendere il lavoro.
 
 ---
@@ -36,10 +36,12 @@ per i 6 intenti timbrici, con fallback deterministico sempre attivo.
 | 3 | Onboarding "Configura la tua IA" (frontend) | done | PASS |
 | 4 | Design system & rifattorizzazione frontend | done | PASS |
 | 5 | Redesign wizard + player A/B | done | PASS |
-| 6 | Chat IA persistente e seamless | **done** | **PASS** |
-| 7 | Hardening finale & pre-pubblicazione | **ready** | — |
+| 6 | Chat IA persistente e seamless | done | PASS |
+| 7 | Hardening finale & pre-pubblicazione | **done** | **PASS** |
 
-`current_phase = 7`. Prossima azione = eseguire la **Fase 7**.
+`current_phase = 7`, **piano completo**: tutte le 8 fasi `done`/`PASS`. Niente altre azioni
+pianificate: la repo è pronta per il rilascio (audit 0 vulnerabilità, README allineato,
+LICENSE MIT presente, segreti puliti).
 
 ---
 
@@ -125,6 +127,29 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
 - **Verifica**: 72 backend + 137 frontend verdi (18 test nuovi), build Vite OK,
   lint 0 errori, E2E curl `delta → done → proposal` con filtri reali, gate
   `verifier` PASS (`implementation/reports/phase-6-verify.md`).
+
+---
+
+## 3quater. Cosa è la Fase 7 e com'è finita (riassunto per continuità)
+
+- **Error handler JSON globale**: middleware 404 JSON + error handler finale
+  `(err, req, res, next)` in `server.js` (mai HTML, mai stack trace, 500 generico).
+- **`/api/resolve-artist`**: try/catch esplicito (500 JSON) + timeout 8s su
+  `https.get` + **User-Agent MusicBrainz reale** (`PersonalEQ/3.1 ( https://github.com/ThatsSteve/EQBackup )`,
+  email placeholder rimossa → rischio ban eliminato).
+- **CORS ristretto**: allowlist `localhost:5173`/`127.0.0.1:5173`/`localhost:3001`/`127.0.0.1:3001`,
+  origine estranea → **403 JSON**; rimosso il duplicato permissivo `app.use(cors())` (Fase 0).
+- **Rate-limit 30 req/min/IP** (in-memory, zero dipendenze) su `/api/sync-autoeq`,
+  `/api/artists`, `/api/hardware/resolve`, `/api/resolve-artist` → **429 JSON**.
+- **Deficit fittizi rimossi**: `compensazione_generica_auto_apprendimento` (PK 2000Hz +1.5dB
+  inventato e salvato come reale) eliminato da `hardwareResolver.js` e da `knowledge_graph.json`;
+  stime euristiche marcate **`estimated: true`** (autoeqDownloader, hardwareResolver, grafo).
+- **README allineato**: 78 DAC/Amp (non 220+), claim OCR rimosso (feature inesistente),
+  URL clone `ThatsSteve/EQBackup`; **file `LICENSE` MIT creato** (dichiarato ma assente).
+- **Audit finale**: `npm audit` root + frontend **0 vulnerabilità** (nanoid/postcss già risolti).
+- **Verifica**: 84 backend + 137 frontend verdi (12 test nuovi in `test/hardening.test.js`),
+  build Vite OK, lint 0 errori, E2E reale 404/CORS/400/429 verificato, gate
+  `verifier` PASS (`implementation/reports/phase-7-verify.md`).
 
 ---
 
@@ -217,12 +242,12 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
   wizard strutturato, proposta EQ come diff Applica/Rifiuta (mai automatica),
   cronologia persistita in localStorage. Dettagli nella sezione 3ter.
 
-### FASE 7 — Hardening finale & pre-pubblicazione (`ready`, la prossima)
-- Error handler JSON globale, try/catch su `/api/resolve-artist`, CORS ristretto,
-  rate-limit sugli endpoint verso terzi; User-Agent reale MusicBrainz; `estimated: true`
-  per dati hardware stimati; rimuovere feature dichiarate ma non implementate (CSV/TMQ, OCR);
-  allineare README; `npm audit` finale + scansione segreti a tappeto; `npm audit fix`
-  per `nanoid` (high, dev-tooling) e `postcss` (moderate) prima del rilascio.
+### FASE 7 — Hardening finale & pre-pubblicazione (`done`, gate verifier PASS)
+- Fatto: error handler JSON globale + 404, try/catch `/api/resolve-artist`, CORS
+  ristretto (403 origini estranee), rate-limit 30/min verso terzi (429), UA
+  MusicBrainz reale + timeout, deficit fittizi rimossi + `estimated: true`,
+  README allineato (78 DAC/Amp, OCR rimosso), LICENSE MIT, npm audit 0 vulnerabilità.
+  Dettagli nella sezione 3quater. **Piano completo: niente altre fasi.**
 
 ---
 
@@ -258,7 +283,7 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
 ## 10. Checklist rapida per verificare che tutto sia a posto
 
 ```
-npm test                      # root: 10 file / 65 test backend + 8 file / 126 test frontend, exit 0
+npm test                      # root: 12 file / 84 test backend + 10 file / 137 test frontend, exit 0
 npm --prefix frontend run build   # Vite build OK
 npm --prefix frontend run lint    # 0 errors
 Test-Path frontend/src/App.jsx    # shell 166 righe

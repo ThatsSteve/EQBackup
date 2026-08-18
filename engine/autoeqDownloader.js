@@ -82,6 +82,7 @@ async function syncAutoEqDb() {
       // Stima acustica impedenza e sensibilità di default (se non nota nel DB esistente)
       let impedance = isIem ? 16 : (/800|600|650|1990|990|utopia|susvara|t1|pro/i.test(rawName) ? 250 : 32);
       let sensitivity = isIem ? 115 : 100;
+      const estimated = true;
 
       // Costruzione link diretto al file ParametricEQ
       const encodedPath = encodeURI(relPath);
@@ -106,6 +107,7 @@ async function syncAutoEqDb() {
           impedance,
           sensitivity,
           architecture,
+          estimated,
           path: relPath,
           parametricEqUrl
         });

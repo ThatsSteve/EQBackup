@@ -66,17 +66,8 @@
         "sennheiser momentum 4",
         "sennheiser momentum 4"
       ],
-      "deficits": [
-        {
-          "issue": "compensazione_generica_auto_apprendimento",
-          "suggested_filter": {
-            "type": "PK",
-            "freq": 2000,
-            "gain": 1.5,
-            "q": 1
-          }
-        }
-      ],
+      "deficits": [],
+      "estimated": true,
       "source": "online_web_search_auto_learning",
       "ingested_at": "2026-07-25T16:43:52.728Z"
     },
@@ -94,17 +85,8 @@
         "fiio custom dac",
         "fiio custom dac"
       ],
-      "deficits": [
-        {
-          "issue": "compensazione_generica_auto_apprendimento",
-          "suggested_filter": {
-            "type": "PK",
-            "freq": 2000,
-            "gain": 1.5,
-            "q": 1
-          }
-        }
-      ],
+      "deficits": [],
+      "estimated": true,
       "source": "online_web_search_auto_learning",
       "ingested_at": "2026-07-25T16:51:05.839Z"
     }

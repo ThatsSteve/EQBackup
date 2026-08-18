@@ -4,7 +4,8 @@ const https = require('https');
 const { getProfileForGenre } = require('./genreArtistMatrix'); // Importa la logica per tradurre generi in intenti
 
 const MATRIX_PATH = path.join(__dirname, 'genreArtistMatrix.json');
-const USER_AGENT = 'PersonalEQ/1.0 ( myemail@example.com )';
+const USER_AGENT = 'PersonalEQ/3.1 ( https://github.com/ThatsSteve/EQBackup )';
+const REQUEST_TIMEOUT_MS = 8000;
 
 // Esegue il fetch da MusicBrainz
 function fetchArtistTagsFromMusicBrainz(artistName) {
@@ -40,7 +41,10 @@ function fetchArtistTagsFromMusicBrainz(artistName) {
                     reject(new Error(`MusicBrainz Error: ${res.statusCode}`));
                 }
             });
-        }).on('error', reject);
+        }).on('error', reject)
+          .setTimeout(REQUEST_TIMEOUT_MS, function () {
+              this.destroy(new Error('MusicBrainz timeout'));
+          });
     });
 }
 

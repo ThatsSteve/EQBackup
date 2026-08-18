@@ -24,6 +24,44 @@ const eqIntentSchema = require('./engine/ai/schema/eqIntentSchema');
 const app = express();
 const PORT = 3001;
 
+// --- Fase 7: CORS ristretto (solo origine frontend locale) ---
+const ALLOWED_ORIGINS = new Set([
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3001',
+  'http://127.0.0.1:3001'
+]);
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || ALLOWED_ORIGINS.has(origin)) return callback(null, true);
+    const err = new Error('Origine non autorizzata.');
+    err.status = 403;
+    return callback(err);
+  }
+}));
+app.use(express.json());
+
+// --- Fase 7: Rate-limit manuale in-memory sugli endpoint verso servizi terzi ---
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX = 30;
+const rateBuckets = new Map();
+
+function thirdPartyRateLimit(req, res, next) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || now - bucket.resetAt > RATE_LIMIT_WINDOW_MS) {
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return next();
+  }
+  bucket.count += 1;
+  if (bucket.count > RATE_LIMIT_MAX) {
+    return res.status(429).json({ error: 'Troppe richieste. Riprova tra poco.' });
+  }
+  return next();
+}
+
 // --- GIUNTURA FASE 2/3: Profilo IA attivo per il wizard (/api/calculate-eq) ---
 // Fase 1: il wizard usa il motore deterministico locale (Grafo di Conoscenza),
 // calcolo istantaneo quando non c'è messaggio utente — comportamento invariato
@@ -33,15 +71,12 @@ const PORT = 3001;
 const WIZARD_AI_PROFILE = process.env.PEQ_WIZARD_AI_PROFILE || 'local-graph';
 const skipLMStudioForWizard = WIZARD_AI_PROFILE === 'local-graph';
 
-app.use(cors());
-app.use(express.json());
-
 app.get('/api/live-sync/check', (req, res) => {
     const status = checkApoPermissions();
     res.json(status);
 });
 
-app.get('/api/sync-autoeq', async (req, res) => {
+app.get('/api/sync-autoeq', thirdPartyRateLimit, async (req, res) => {
     const result = await syncAutoEqDb();
     if (result.success) {
         res.json(result);
@@ -50,7 +85,7 @@ app.get('/api/sync-autoeq', async (req, res) => {
     }
 });
 
-app.get('/api/artists', (req, res) => {
+app.get('/api/artists', thirdPartyRateLimit, (req, res) => {
     try {
         const artistsPath = path.join(__dirname, 'src', 'artists.json');
         const artistsData = JSON.parse(fs.readFileSync(artistsPath, 'utf-8'));
@@ -126,7 +161,7 @@ app.get('/api/hardware/models', (req, res) => {
   }
 });
 
-app.post('/api/hardware/resolve', async (req, res) => {
+app.post('/api/hardware/resolve', thirdPartyRateLimit, async (req, res) => {
   try {
     const { device, type } = req.body;
     const resolution = await resolveHardware(device, type || 'headphone');
@@ -532,16 +567,34 @@ app.post('/api/chat/stream', async (req, res) => {
 
 const { resolveArtistOnline } = require('./engine/dspEngine/artistResolver');
 
-app.post('/api/resolve-artist', async (req, res) => {
+app.post('/api/resolve-artist', thirdPartyRateLimit, async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: "Nome artista mancante." });
-  
-  const artist = await resolveArtistOnline(name);
-  if (artist) {
-      res.json({ success: true, artist });
-  } else {
-      res.json({ success: false, message: "Non trovato o impossibile risolvere." });
+
+  try {
+    const artist = await resolveArtistOnline(name);
+    if (artist) {
+        res.json({ success: true, artist });
+    } else {
+        res.json({ success: false, message: "Non trovato o impossibile risolvere." });
+    }
+  } catch (err) {
+    console.error(`[API] Errore in /api/resolve-artist: ${err.message}`);
+    res.status(500).json({ success: false, message: "Errore interno durante la risoluzione." });
   }
+});
+
+// --- Fase 7: 404 JSON globale + error handler finale (mai HTML, mai stack trace) ---
+app.use((req, res) => {
+  res.status(404).json({ error: 'Risorsa non trovata.' });
+});
+
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+  const status = err.status || err.statusCode || 500;
+  const message = status === 500 ? 'Errore interno del server.' : (err.message || 'Richiesta non valida.');
+  if (status === 500) console.error('[API] Errore non gestito:', err);
+  res.status(status).json({ error: message });
 });
 
 // Avvio del server solo quando eseguito direttamente (`node server.js`):

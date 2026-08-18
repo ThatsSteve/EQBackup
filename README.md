@@ -63,9 +63,9 @@ L'ecosistema sfrutta un approccio **RAG (Retrieval-Augmented Generation)** a 3 l
 
 1. **Database Locale Nativo**:
    - **6.047 Profili Cuffie/IEM** con standard Harman, sincronizzati e processati dal progetto open-source *AutoEq* (dati di Crinacle, Oratory1990, Innerfidelity, Rtings).
-   - **220+ Profili DAC & Amplificatori** precompilati in `dac_amp_db.json`.
-2. **Scraper Web + AI Local (Fallback 1)**: Se l'hardware non è in archivio, il server avvia una scansione web per recuperarne le specifiche (potenza, impedenza) e l'IA locale le interpreta.
-3. **`ManualSpecsCard` (Fallback 2)**: L'utente può inserire a mano i dati o scattare/caricare una foto (OCR) della scheda tecnica dell'amplificatore.
+   - **78 Profili DAC & Amplificatori** precompilati in `dac_amp_db.json`.
+2. **Scraper Web + AI Local (Fallback 1)**: Se l'hardware non è in archivio, il server avvia una scansione web per recuperarne le specifiche (potenza, impedenza) e l'IA locale le interpreta. Le specifiche stimate da euristiche sono marcate come `estimated` e non generano correzioni EQ automatiche.
+3. **`ManualSpecsCard` (Fallback 2)**: L'utente può inserire a mano i dati della scheda tecnica dell'amplificatore.
 
 ---
 
@@ -136,8 +136,8 @@ L'intero sistema è pensato per funzionare in **locale**, garantendo latenza min
 ### Istruzioni passo-passo:
 1. **Clona il repository**:
    ```bash
-   git clone https://github.com/ThatsSteve/EQ.git
-   cd EQ
+   git clone https://github.com/ThatsSteve/EQBackup.git
+   cd EQBackup
    ```
 2. **Installa le dipendenze**:
    ```bash
