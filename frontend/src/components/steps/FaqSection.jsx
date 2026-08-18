@@ -12,7 +12,7 @@ export function FaqSection({ activeFaq, setActiveFaq }) {
   return (
     <div className="faq-section mt-4" style={{ background: 'rgba(15, 18, 25, 0.6)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '16px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-        <span style={{ fontSize: '1.2rem', color: '#3b82f6' }}>ℹ️</span>
+        <span style={{ fontSize: '1.2rem', color: 'var(--color-accent-blue)' }}>ℹ️</span>
         <h4 style={{ margin: 0, fontSize: '1rem', color: '#fff', fontWeight: 600 }}>Guida Rapida all'Acustica Parametrica</h4>
         <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: 'auto' }}>Clicca su un concetto per capire come opera l'IA:</span>
       </div>
@@ -24,7 +24,7 @@ export function FaqSection({ activeFaq, setActiveFaq }) {
             type="button"
             className="faq-pill"
             onClick={() => setActiveFaq(activeFaq === faq.id ? null : faq.id)}
-            style={{ background: activeFaq === faq.id ? 'rgba(59, 130, 246, 0.4)' : undefined, color: activeFaq === faq.id ? '#fff' : undefined, borderColor: activeFaq === faq.id ? '#3b82f6' : undefined }}
+            style={{ background: activeFaq === faq.id ? 'rgba(59, 130, 246, 0.4)' : undefined, color: activeFaq === faq.id ? '#fff' : undefined, borderColor: activeFaq === faq.id ? 'var(--color-accent-blue)' : undefined }}
           >
             {faq.label} {activeFaq === faq.id ? '▲' : '▼'}
           </button>

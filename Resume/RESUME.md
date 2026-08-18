@@ -1,6 +1,6 @@
 # RESUME — Personal EQ: contesto generale e istruzioni per riprendere
 
-> Data snapshot: 2026-08-18 · Stato: **Fasi 0-4 DONE (gate security+QA PASS)** · Fase corrente: **5 (ready)**
+> Data snapshot: 2026-08-18 · Stato: **Fasi 0-5 DONE (gate verifier PASS)** · Fase corrente: **6 (ready)**
 > Questo documento vive in `Resume/RESUME.md` ed è la prima cosa da leggere per riprendere il lavoro.
 
 ---
@@ -17,26 +17,29 @@ per i 6 intenti timbrici, con fallback deterministico sempre attivo.
 - **Frontend**: Vite + React 19, cartella `frontend/`; unico host di rete = `http://localhost:3001`
   (centralizzato in `frontend/src/api/client.js`: `API_BASE`, `apiGet`, `apiPost`).
 - **DSP**: `engine/dspEngine/coreCalculator.js`, `engine/graphEngine.js`, `engine/aiOrchestrator.js`.
-- **Piano**: `implementation/IMPLEMENTATION_PLAN.md` (fonte di verità) + `implementation/plan_state.json`
-  (stato macchina) + `implementation/prompts/phase-N.md` + `implementation/reports/phase-N-{security,qa}.md`.
-- **Agenti OpenCode**: definiti in `.opencode/agents/` (6 agenti; `opencode.json` assegna i modelli).
+- **Piano**: `implementation/IMPLEMENTATION_PLAN.md` (riferimento archivistico) + `implementation/plan_state.json`
+  (stato macchina) + `implementation/phases/phase-N.md` (spec autosufficienti, una per fase) +
+  `implementation/reports/phase-N-verify.md` (unico report gate).
+- **Agenti OpenCode**: definiti in `.opencode/agents/` (4: `architect-orchestrator` primary + subagent
+  `backend-ai-dev`, `frontend-redesign-dev`, `verifier`; `opencode.json` assegna i modelli).
+- **Guida di riferimento**: `Resume/00_LEGGI_PRIMA.md` (spiega l'architettura v2 e cosa migrare).
 
 ---
 
 ## 2. Stato delle fasi (plan_state.json)
 
-| Fase | Titolo | Stato | Security | QA |
-|---|---|---|---|---|
-| 0 | Governance & tooling | done | PASS | PASS |
-| 1 | Stabilizzazione critica (backend) | done | PASS | PASS |
-| 2 | Layer astrazione provider IA (backend) | done | PASS | PASS |
-| 3 | Onboarding "Configura la tua IA" (frontend) | done | PASS | PASS |
-| 4 | Design system & rifattorizzazione frontend | **done** | **PASS** | **PASS** |
-| 5 | Redesign wizard + player A/B | **ready** | — | — |
-| 6 | Chat IA persistente e seamless | pending | — | — |
-| 7 | Hardening finale & pre-pubblicazione | pending | — | — |
+| Fase | Titolo | Stato | Verifier |
+|---|---|---|---|
+| 0 | Governance & tooling | done | PASS |
+| 1 | Stabilizzazione critica (backend) | done | PASS |
+| 2 | Layer astrazione provider IA (backend) | done | PASS |
+| 3 | Onboarding "Configura la tua IA" (frontend) | done | PASS |
+| 4 | Design system & rifattorizzazione frontend | done | PASS |
+| 5 | Redesign wizard + player A/B | **done** | **PASS** |
+| 6 | Chat IA persistente e seamless | **ready** | — |
+| 7 | Hardening finale & pre-pubblicazione | pending | — |
 
-`current_phase = 5`. Prossima azione = eseguire la **Fase 5**.
+`current_phase = 6`. Prossima azione = eseguire la **Fase 6**.
 
 ---
 
@@ -77,6 +80,30 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
 
 ---
 
+## 3bis. Cosa è la Fase 5 e com'è finita (riassunto per continuità)
+
+- **`AudioPlayerAB.jsx` (3 bug storici risolti)**:
+  1. `biquadNodesRef` ora popolato: la catena parametrica viene costruita da
+     `liveParametricFilters` (`buildParametricChain`, nodi `peaking/lowshelf/highshelf`)
+     e instradata tramite un `inputNode` unico (`routeActiveChain`) — gli slider modificano
+     l'audio in tempo reale;
+  2. doppio volume eliminato: solo `masterGain` controlla il volume (`audioEl.volume` rimosso);
+  3. RAF loop senza leak a fine brano: nuovo `stopPlayback()` (clearInterval +
+     cancelAnimationFrame + `bandLevels` azzerati) collegato a `onEnded` e a pausa.
+- **Design system applicato a tutti gli step**: 9 file in `frontend/src/components/steps/`
+  passati dai colori hex hardcoded ai token (`var(--color-*)`: accent, semantic, timbre, text);
+  gli stroke SVG di Recharts restano hex (le `var()` non valgono negli attributi SVG).
+- **`frontend/src/components/charts/EqCurveTable.jsx` (nuovo, 105 righe)**: vista tabellare
+  accessibile alternativa ai grafici Recharts in StepTuning e StepEqFinal (toggle nativo con
+  `aria-pressed`, `<table>` con caption + `scope="col"/"row"`, valori formattati dB/kHz).
+- **Verifica**: 65 backend + 126 frontend verdi, build Vite OK, lint 0 errori, grep segreti
+  pulito, gate `verifier` PASS (`implementation/reports/phase-5-verify.md`).
+- **Nota di processo**: il primo tentativo orchestrato (dev agent in CLI) ha fallito 2 volte con
+  diff vuoto (fase `blocked`); sbloccata facendo il dev **in sessione principale** — confermato
+  come modalità standard per i moduli free-tier.
+
+---
+
 ## 4. Contratti API (backend già pronto)
 
 - `GET /api/engine-status` → `{success, engine}` (es. 'Local Knowledge Graph' | 'LM Studio').
@@ -112,37 +139,56 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
    nessun `fetch` verso host ≠ localhost:3001; chiave API solo nel body della POST di
    creazione profilo, mai in log/localStorage/console.
 7. Lingua UI e commenti: **italiano** (i test/commenti esistenti sono in italiano).
-8. Modalità di lavoro corrente: **il dev è eseguito direttamente da questa sessione
-   principale** (unico attore stabile); le run CLI (`opencode run --agent ...`) vanno
-   lanciate solo per i gate, attached e monitorate, con timeout generosi (≥ 15 min).
+8. Modalità di lavoro corrente (v2): ogni fase si esegue con
+   `opencode run --agent architect-orchestrator "Leggi implementation/plan_state.json, esegui SOLO la
+   fase corrente seguendo implementation/phases/phase-N.md, poi fermati e riportami l'esito."` — run
+   **attached e monitorata** (timeout generosi: una fase intera può richiedere 1h+). L'orchestratore
+   delega al dev agent e chiude col gate unico `verifier`. Se la run viene uccisa, riesegui lo stesso
+   comando: riparte da `plan_state.json`, non perde lavoro. Per più fasi di fila aggiungi "esegui tutte
+   le fasi in sequenza senza fermarti finché non trovi un blocco".
 9. Su Windows/PowerShell 5.1: niente `&&`/`||`/`grep`/`head` nei comandi; usare
    cmdlet PowerShell o `;` + `if ($?)`.
 
 ---
 
-## 6. Ciclo di lavoro per ogni fase (procedura collaudata)
+## 6. Ciclo di lavoro per ogni fase (architettura v2)
 
-1. Leggere `implementation/plan_state.json` → fase corrente.
-2. Leggere `implementation/prompts/phase-N.md` (e l'esito dei gate precedenti nei report).
-3. Eseguire il lavoro di dev (in questa sessione principale), con self-check:
-   - `npm test` (root) → exit 0 (65 backend + 126 frontend)
-   - `npm run build` (frontend) → exit 0
-   - `npm run lint` (frontend) → 0 errori
-   - conteggio righe (App <200, componenti <300), grep segreti pulito
-   - `git diff -- implementation/plan_state.json` intatto **prima** dei gate
-4. Gate security: `opencode run --agent security-auditor "<task>"` (fallback su default
-   agent con modello hy3-free — atteso), verdetto in `implementation/reports/phase-N-security.md`.
-   Se FAIL su item già valutati, rieseguire con l'evidenza di classificazione (es. item
-   carryover Fasi 0-3: vitest nei lock = tooling test Fase 0, non runtime).
-5. Gate QA: `opencode run --agent qa-verifier "<task>"` → `implementation/reports/phase-N-qa.md`.
-6. Entrambi PASS → aggiornare `plan_state.json` (fase N done, N+1 ready, `current_phase` N+1,
-   nota di riepilogo) e procedere.
+1. Leggere `implementation/plan_state.json` → fase corrente. Controllare `heartbeat`/`current_step`/
+   `step_count_this_phase`: se l'heartbeat è fermo da minuti mentre il processo risulta in esecuzione,
+   la run è bloccata → interromperla e rilanciare lo stesso comando.
+2. Eseguire la fase con (da `Resume/00_LEGGI_PRIMA.md` §5):
+   `opencode run --agent architect-orchestrator "Leggi implementation/plan_state.json, esegui SOLO la
+   fase corrente seguendo implementation/phases/phase-N.md, poi fermati e riportami l'esito."`
+   L'orchestratore: legge **solo** `phase-N.md`, individua `## Agente`, delega al dev agent via Task,
+   aggiorna `heartbeat`/`step_count_this_phase` a ogni checkpoint, poi invoca il gate unico `verifier`
+   che scrive `implementation/reports/phase-N-verify.md` (sezioni Sicurezza + QA + Esito complessivo).
+   - **Regola diff vuoto** (orchestratore): se il dev agent non produce modifiche, fase fallita SENZA
+     verifier — niente cicli a vuoto.
+   - **Budget di tempo**: run mai oltre ~25 minuti di lavoro effettivo su una fase; oltre, l'orchestratore
+     riporta stato parziale o `blocked` ("run troppo lunga").
+   - In pratica, per i moduli free-tier il dev è più affidabile **in questa sessione principale**
+     (come già da Fase 4): in tal caso si lavora qui, si aggiorna `plan_state.json` a mano
+     (heartbeat/current_step) e si lancia SOLO il gate finale.
+3. Esito: **PASS** → fase N `done`, N+1 `ready`, e l'orchestratore **si ferma** e riporta l'esito
+   (per più fasi in sequenza serve richiederlo esplicitamente). **FAIL** → `attempts` +1 e nuovo
+   giro col dev agent; dopo 2 tentativi falliti consecutivi o >25 passi nella fase → `blocked` + nota
+   in `notes` e stop in attesa di input umano.
+4. Self-check manuale durante il dev (prima di delegare al gate): `npm test` (root, exit 0),
+   `npm run build` (frontend), `npm run lint` 0 errori, conteggio righe, grep segreti pulito.
+5. Gate `verifier` (se non già eseguito dall'orchestratore): `opencode run --agent verifier "<task>"`
+   con timeout **max 20 minuti** (il report `implementation/reports/phase-N-verify.md` è l'unico file
+   che scrive). Se scade: se il report non c'è, rilanciare con prompt mirato e timeout 15 min; se
+   ancora nulla, verifica manuale e nota nel report. Mai run in attesa oltre 20 minuti.
 
 ---
 
 ## 7. Prossime fasi (scope dal piano, §5)
 
-### FASE 5 — Redesign wizard + player A/B (`ready`, la prossima)
+### FASE 5 — Redesign wizard + player A/B (`done`, gate verifier PASS)
+- Fatto: fix AudioPlayerAB (3 bug), design-tokens su tutti gli step, EqCurveTable (vista
+  tabellare WCAG 2.1 AA). Dettagli nella sezione 3bis.
+
+### FASE 6 — Chat IA persistente e seamless (`ready`, la prossima)
 - Applicare il design system (design-tokens) a tutti gli step.
 - Fix bug noti del player `AudioPlayerAB.jsx` (ora IN SCOPE):
   - `biquadNodesRef` mai popolato in modalità parametrica;
@@ -178,22 +224,22 @@ grep segreti 0 match; fetch solo `localhost:3001`; `AudioPlayerAB.jsx`,
 - `run-watchdog.ps1` + task pianificato `EQWatchdog` (disabilitato) + `loop-runner.cmd`:
   infrastruttura runner resiliente; NON lanciarla più senza supervisione (rischio
   interferenza con la sessione principale).
-- Backup della repo: clone locale completo su Desktop (vedi sezione 9).
-- La repo NON è su GitHub e non deve esserci: progetto privato locale.
+- Backup della repo: clone locale completo su Desktop + mirror su GitHub `ThatsSteve/EQBackup`
+  (push manuale, vedi sezione 9). La repo originale `Desktop/EQ` resta locale e non toccata.
 
 ---
 
-## 9. Backup (eseguito il 2026-08-18)
+## 9. Backup (eseguito il 2026-08-18, v2 con GitHub)
 
-- La repo di backup è un **clone locale completo** (stesso contenuto del working tree,
-  tutto committato) in una cartella separata sul Desktop, ad esempio
-  `C:\Users\yscuo\Desktop\EQ_backup_<data>`.
-- La repo originale **non è stata toccata** (nessun commit aggiunto).
+- Repo di backup: `C:\Users\yscuo\Desktop\EQ_backup_2026-08-18` (clone locale completo, tutto
+  committato), mirror su GitHub **`ThatsSteve/EQBackup`** (pubblica).
+- La repo originale `Desktop/EQ` **non viene mai toccata** (nessun commit, nessun remote).
 - Procedura riproducibile:
   1. `git clone C:\Users\yscuo\Desktop\EQ C:\Users\yscuo\Desktop\EQ_backup_<data>`
   2. `robocopy C:\Users\yscuo\Desktop\EQ C:\Users\yscuo\Desktop\EQ_backup_<data> /E /XD node_modules dist .git /XF run-orchestrator*.log run-orchestrator.err run-orchestrator.pid test-detach.log test-detach.pid`
   3. `git -C C:\Users\yscuo\Desktop\EQ_backup_<data> add -A`
-  4. `git -C C:\Users\yscuo\Desktop\EQ_backup_<data> commit -m "Snapshot working tree completo"`
+  4. `git -C C:\Users\yscuo\Desktop\EQ_backup_<data> commit -m "<descrizione>"`
+  5. `git -C C:\Users\yscuo\Desktop\EQ_backup_<data> push origin main` (aggiorna il mirror GitHub)
 
 ---
 

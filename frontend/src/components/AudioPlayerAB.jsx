@@ -194,6 +194,9 @@ export default function AudioPlayerAB({
   const analyserRef = useRef(null);
   const gainNodeRef = useRef(null);
   const biquadNodesRef = useRef([]);
+  const paramChainRef = useRef(null);
+  const inputNodeRef = useRef(null);
+  const simpleConnectedRef = useRef(false);
   const filtersRef = useRef({});
   const intervalRef = useRef(null);
   const canvasRef = useRef(null);
@@ -264,13 +267,11 @@ export default function AudioPlayerAB({
 
   }, [listeningPreferences, liveParametricFilters, isEqActive, eqEditMode]);
 
-  // Master Volume
+  // Master Volume (unico percorso di guadagno: masterGain — il volume
+  // dell'elemento audio resta a 1 per evitare il doppio volume)
   useEffect(() => {
     if (gainNodeRef.current && audioCtxRef.current) {
       gainNodeRef.current.gain.setTargetAtTime(volume, audioCtxRef.current.currentTime, 0.05);
-    }
-    if (audioElRef.current) {
-      audioElRef.current.volume = volume;
     }
   }, [volume]);
 
@@ -284,6 +285,12 @@ export default function AudioPlayerAB({
     if (ctx.state === 'suspended') ctx.resume();
 
     if (!analyserRef.current) {
+      // Punto di ingresso unico del grafo (media element e synth) — la catena
+      // attiva (semplice o parametrica) viene instradata qui sotto.
+      const inputNode = ctx.createGain();
+      inputNode.gain.value = 1;
+      inputNodeRef.current = inputNode;
+
       // Simple mode static Biquad chain
       const subBass = ctx.createBiquadFilter();
       subBass.type = 'lowshelf';
@@ -325,7 +332,10 @@ export default function AudioPlayerAB({
       masterGain.gain.value = volume;
       gainNodeRef.current = masterGain;
 
-      // Connect Simple Chain
+      // Connect Simple Chain (ingresso via inputNode: in semplice la catena
+      // statica parte da subBass, in parametrica verrà sostituita)
+      inputNode.connect(subBass);
+      simpleConnectedRef.current = true;
       subBass.connect(midBass);
       midBass.connect(lowMids);
       lowMids.connect(highMids);
@@ -339,16 +349,87 @@ export default function AudioPlayerAB({
     // Connect audio element if user uploads a file
     if (audioElRef.current && !mediaSourceRef.current) {
         mediaSourceRef.current = ctx.createMediaElementSource(audioElRef.current);
-        mediaSourceRef.current.connect(filtersRef.current.subBass);
+        mediaSourceRef.current.connect(inputNodeRef.current);
+    }
+
+    routeActiveChain();
+  };
+
+  // Costruisce (o ricostruisce) la catena parametrica live a partire da
+  // liveParametricFilters, aggiornando biquadNodesRef e collegandola al grafo.
+  const buildParametricChain = () => {
+    const ctx = audioCtxRef.current;
+    const inputNode = inputNodeRef.current;
+    const masterGain = gainNodeRef.current;
+    if (!ctx || !inputNode || !masterGain) return;
+
+    if (paramChainRef.current && paramChainRef.current.length > 0) {
+      inputNode.disconnect(paramChainRef.current[0]);
+      paramChainRef.current[paramChainRef.current.length - 1].disconnect(masterGain);
+    }
+
+    const nodes = liveParametricFilters.map(f => {
+      const bq = ctx.createBiquadFilter();
+      bq.type = f.type === 'LS' ? 'lowshelf' : f.type === 'HS' ? 'highshelf' : 'peaking';
+      bq.frequency.value = f.freq;
+      bq.gain.value = isEqActive ? f.gain : 0;
+      bq.Q.value = f.q || 1.41;
+      return bq;
+    });
+
+    nodes.forEach((n, i) => {
+      if (i > 0) nodes[i - 1].connect(n);
+    });
+
+    if (nodes.length > 0) {
+      inputNode.connect(nodes[0]);
+      nodes[nodes.length - 1].connect(masterGain);
+    }
+
+    paramChainRef.current = nodes;
+    biquadNodesRef.current = nodes;
+  };
+
+  // Instrada l'input unico verso la catena attiva (semplice o parametrica).
+  const routeActiveChain = () => {
+    const inputNode = inputNodeRef.current;
+    if (!inputNode) return;
+
+    if (eqEditMode === 'parametric') {
+      if (simpleConnectedRef.current && filtersRef.current.subBass) {
+        inputNode.disconnect(filtersRef.current.subBass);
+        simpleConnectedRef.current = false;
+      }
+      buildParametricChain();
+    } else {
+      if (paramChainRef.current && paramChainRef.current.length > 0) {
+        inputNode.disconnect(paramChainRef.current[0]);
+        paramChainRef.current[paramChainRef.current.length - 1].disconnect(gainNodeRef.current);
+        paramChainRef.current = null;
+        biquadNodesRef.current = [];
+      }
+      if (!simpleConnectedRef.current && filtersRef.current.subBass) {
+        inputNode.connect(filtersRef.current.subBass);
+        simpleConnectedRef.current = true;
+      }
     }
   };
+
+  // Instrada l'input verso la catena attiva a ogni cambio di modalità o di
+  // numero di bande parametriche (la catena statica resta collegata al grafo,
+  // ma l'input unico decide quale catena riceve il segnale).
+  useEffect(() => {
+    if (audioCtxRef.current && inputNodeRef.current) {
+      routeActiveChain();
+    }
+  }, [eqEditMode, liveParametricFilters.length]);
 
   // Synthetic Beat Generator for loop testing
   const triggerBeat = (step) => {
     if (!isPlayingRef.current || !audioCtxRef.current || !filtersRef.current.subBass) return;
     const ctx = audioCtxRef.current;
     const now = ctx.currentTime;
-    const inputNode = filtersRef.current.subBass;
+    const inputNode = inputNodeRef.current || filtersRef.current.subBass;
 
     const playKick = () => {
       const osc = ctx.createOscillator();
@@ -454,6 +535,23 @@ export default function AudioPlayerAB({
     }
   };
 
+  // Stop completo dello stato di riproduzione (usato a fine brano e in pausa):
+  // cancella RAF loop e interval e azzera le gauges — nessun leak di CPU.
+  const stopPlayback = () => {
+    isPlayingRef.current = false;
+    setIsPlaying(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (audioElRef.current) audioElRef.current.pause();
+    setBandLevels({ bass: 0, mids: 0, treble: 0 });
+  };
+
   const togglePlay = () => {
     if (!isPlaying) {
       setupAudioGraph();
@@ -472,12 +570,7 @@ export default function AudioPlayerAB({
           }, 130);
       }
     } else {
-      isPlayingRef.current = false;
-      setIsPlaying(false);
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      if (audioElRef.current) audioElRef.current.pause();
-      setBandLevels({ bass: 0, mids: 0, treble: 0 });
+      stopPlayback();
     }
   };
 
@@ -715,7 +808,7 @@ export default function AudioPlayerAB({
       </div>
 
       {/* Hidden HTML audio element for file playback */}
-      <audio ref={audioElRef} crossOrigin="anonymous" onEnded={() => setIsPlaying(false)} />
+      <audio ref={audioElRef} crossOrigin="anonymous" onEnded={stopPlayback} />
 
       {/* Visual Gauges */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '12px' }}>

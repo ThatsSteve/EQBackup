@@ -83,9 +83,9 @@ function DeviceSection({ type, state, dispatch, brands, models, selectedBrand, s
                   }}
                 />
               )}
-              {hwLoading[type] && <div className="validation-badge" style={{ borderColor: '#ffb142', color: '#ffb142' }}><span>🔍 Ricerca...</span></div>}
+              {hwLoading[type] && <div className="validation-badge" style={{ borderColor: 'var(--color-semantic-warning)', color: 'var(--color-semantic-warning)' }}><span>🔍 Ricerca...</span></div>}
               {!hwLoading[type] && hwStatus[type] && (
-                <div className="validation-badge" style={{ borderColor: hwStatus[type].status === 'RESOLVED_LOCAL' ? '#00f0ff' : (hwStatus[type].status === 'RESOLVED_ONLINE' || hwStatus[type].status === 'RESOLVED_OPTIONAL') ? '#10b981' : '#ffb142', color: hwStatus[type].status === 'RESOLVED_LOCAL' ? '#00f0ff' : (hwStatus[type].status === 'RESOLVED_ONLINE' || hwStatus[type].status === 'RESOLVED_OPTIONAL') ? '#10b981' : '#ffb142' }}>
+                <div className="validation-badge" style={{ borderColor: hwStatus[type].status === 'RESOLVED_LOCAL' ? 'var(--color-accent-cyan)' : (hwStatus[type].status === 'RESOLVED_ONLINE' || hwStatus[type].status === 'RESOLVED_OPTIONAL') ? 'var(--color-semantic-successAlt)' : 'var(--color-semantic-warning)', color: hwStatus[type].status === 'RESOLVED_LOCAL' ? 'var(--color-accent-cyan)' : (hwStatus[type].status === 'RESOLVED_ONLINE' || hwStatus[type].status === 'RESOLVED_OPTIONAL') ? 'var(--color-semantic-successAlt)' : 'var(--color-semantic-warning)' }}>
                   {hwStatus[type].status === 'RESOLVED_LOCAL' && <CheckCircle size={14} />}
                   {(hwStatus[type].status === 'RESOLVED_ONLINE' || hwStatus[type].status === 'RESOLVED_OPTIONAL') && <CheckCircle size={14} />}
                   {hwStatus[type].status === 'REQUIRES_USER_INPUT' && <HelpCircle size={14} />}

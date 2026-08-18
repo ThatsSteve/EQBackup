@@ -50,6 +50,11 @@ gira su un modello a contesto/capacità limitati.
 6. Al ritorno del dev agent: aggiorna `heartbeat`/`current_step` ("verifica in corso"), status fase N =
    `verify`, invoca `verifier` passandogli la sezione Definition of Done + Security checklist di
    `phase-N.md`.
+   - **Regola diff vuoto**: se `git diff` (o `git status`) mostra che il dev agent non ha prodotto
+     NESSUNA modifica, considera la fase fallita SENZA invocare `verifier`: incrementa `attempts`,
+     scrivi il motivo in `current_step` e riporta subito all'utente. Non sprecare un ciclo di verifica.
+   - **Una correzione per errore banale**: errori banali (lint, import, refusi) vanno corretti al primo
+     giro; se al secondo giro il problema è identico, fermati e chiedi input umano.
 7. Leggi `implementation/reports/phase-N-verify.md`:
    - **FAIL**: incrementa `attempts` della fase, aggiorna `heartbeat`/`current_step` con un riassunto
      del problema, torna al punto 5 passando al dev agent anche l'elenco dei problemi dal report.
@@ -74,3 +79,6 @@ comunque.
 - Aggiorna `heartbeat` ad ogni checkpoint elencato sopra, anche a metà fase — è l'unico modo per
   l'utente di capire dall'esterno se sei ancora attivo o bloccato.
 - Non considerare mai una fase `done` senza un report `verifier` con esito PASS salvato su disco.
+- **Budget di tempo**: se la run supera ~25 minuti di lavoro effettivo su una fase, fermati e riporta
+  lo stato parziale (o `blocked` con nota "run troppo lunga, verifica manuale necessaria"). Meglio un
+  checkpoint breve che un giro a vuoto.

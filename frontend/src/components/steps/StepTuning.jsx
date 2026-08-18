@@ -3,6 +3,7 @@ import { CheckCircle } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import AudioPlayerAB from '../AudioPlayerAB';
 import { EqCurveTooltip } from '../charts/EqCurveTooltip';
+import { EqCurveTable } from '../charts/EqCurveTable';
 import { BASS_OPTIONS, MIDS_OPTIONS, TREBLE_OPTIONS } from '../../data/eqOptions';
 
 /**
@@ -21,9 +22,9 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
               <p className="step-subtitle" style={{ margin: '4px 0 0 0' }}>Ascolta la canzone dal vivo, regola i parametri con i tasti per strumenti o la banda parametrica e osserva la curva dell'EQ che si trasforma in tempo reale.</p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(0,0,0,0.4)', padding: '6px 12px', borderRadius: '30px', border: `1px solid ${isLiveSyncEnabled ? 'rgba(0, 255, 135, 0.4)' : 'rgba(255,255,255,0.1)'}` }}>
-              <span style={{ fontSize: '0.85rem', color: isLiveSyncEnabled ? '#00ff87' : '#aaa', fontWeight: 600 }}>⚡ Live Sync Windows APO</span>
-              <div onClick={toggleLiveSync} style={{ width: '40px', height: '22px', background: isLiveSyncEnabled ? '#00ff87' : 'rgba(255,255,255,0.1)', borderRadius: '11px', position: 'relative', cursor: 'pointer', transition: '0.3s' }}>
-                <div style={{ position: 'absolute', top: '2px', left: isLiveSyncEnabled ? '20px' : '2px', width: '18px', height: '18px', background: isLiveSyncEnabled ? '#000' : '#888', borderRadius: '50%', transition: '0.3s' }} />
+              <span style={{ fontSize: '0.85rem', color: isLiveSyncEnabled ? 'var(--color-timbre-treble)' : 'var(--color-text-faint)', fontWeight: 600 }}>⚡ Live Sync Windows APO</span>
+              <div onClick={toggleLiveSync} style={{ width: '40px', height: '22px', background: isLiveSyncEnabled ? 'var(--color-timbre-treble)' : 'rgba(255,255,255,0.1)', borderRadius: '11px', position: 'relative', cursor: 'pointer', transition: '0.3s' }}>
+                <div style={{ position: 'absolute', top: '2px', left: isLiveSyncEnabled ? '20px' : '2px', width: '18px', height: '18px', background: isLiveSyncEnabled ? '#000' : 'var(--color-text-subtle)', borderRadius: '50%', transition: '0.3s' }} />
               </div>
             </div>
           </div>
@@ -44,21 +45,23 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <h3 style={{ margin: 0, fontSize: '1.05rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span>📈 Grafico Curva EQ Live in Evoluzione</span>
-                <span style={{ fontSize: '0.75rem', color: '#00f0ff', background: 'rgba(0,240,255,0.15)', padding: '2px 8px', borderRadius: '10px', border: '1px solid rgba(0,240,255,0.3)' }}>Real-Time Response</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-accent-cyan)', background: 'rgba(0,240,255,0.15)', padding: '2px 8px', borderRadius: '10px', border: '1px solid rgba(0,240,255,0.3)' }}>Real-Time Response</span>
               </h3>
-              <span style={{ fontSize: '0.8rem', color: '#aaa' }}>La risposta in frequenza si aggiorna live con ogni modifica</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-faint)' }}>La risposta in frequenza si aggiorna live con ogni modifica</span>
             </div>
-            <div className="chart-container" style={{ height: '260px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a35" />
-                  <XAxis dataKey="freq" type="number" domain={[20, 20000]} scale="log" ticks={[20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]} stroke="#8a8a93" tickFormatter={(v) => v>=1000?`${v/1000}k`:v} />
-                  <YAxis domain={['auto', 'auto']} stroke="#8a8a93" tickFormatter={(v) => `${v>0?'+':''}${v}dB`} />
-                  <Tooltip content={<EqCurveTooltip />} />
-                  <Line type="monotone" dataKey="manualGain" name="Risposta EQ Attuale Live" stroke="#00f0ff" strokeWidth={3} dot={false} animationDuration={300} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            <EqCurveTable chartData={chartData} series={[{ key: 'manualGain', label: 'Risposta EQ (dB)', color: '#00f0ff' }]}>
+              <div className="chart-container" style={{ height: '260px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#2a2a35" />
+                    <XAxis dataKey="freq" type="number" domain={[20, 20000]} scale="log" ticks={[20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]} stroke="#8a8a93" tickFormatter={(v) => v>=1000?`${v/1000}k`:v} />
+                    <YAxis domain={['auto', 'auto']} stroke="#8a8a93" tickFormatter={(v) => `${v>0?'+':''}${v}dB`} />
+                    <Tooltip content={<EqCurveTooltip />} />
+                    <Line type="monotone" dataKey="manualGain" name="Risposta EQ Attuale Live" stroke="#00f0ff" strokeWidth={3} dot={false} animationDuration={300} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </EqCurveTable>
           </div>
 
           <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
@@ -66,7 +69,7 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
               type="button"
               className="btn-primary export-btn"
               onClick={() => dispatch({ type: 'NEXT_STEP' })}
-              style={{ padding: '16px 36px', fontSize: '1.1rem', fontWeight: 800, background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)', boxShadow: '0 8px 30px rgba(0, 240, 255, 0.4)', cursor: 'pointer', borderRadius: '30px' }}
+              style={{ padding: '16px 36px', fontSize: '1.1rem', fontWeight: 800, background: 'linear-gradient(135deg, var(--color-accent-cyan) 0%, var(--color-accent-blue) 100%)', boxShadow: '0 8px 30px rgba(0, 240, 255, 0.4)', cursor: 'pointer', borderRadius: '30px' }}
             >
               🏁 Fine: Concludi Calibrazione & Genera Tabella Valori
             </button>
@@ -78,9 +81,9 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
               <h2 className="step-title" style={{ margin: 0 }}>3. Tuning d'Ascolto Guidato</h2>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(0,0,0,0.4)', padding: '6px 12px', borderRadius: '30px', border: `1px solid ${isLiveSyncEnabled ? 'rgba(0, 255, 135, 0.4)' : 'rgba(255,255,255,0.1)'}` }}>
-                  <span style={{ fontSize: '0.85rem', color: isLiveSyncEnabled ? '#00ff87' : '#aaa', fontWeight: 600 }}>⚡ Live Sync Windows APO</span>
-                  <div onClick={toggleLiveSync} style={{ width: '40px', height: '22px', background: isLiveSyncEnabled ? '#00ff87' : 'rgba(255,255,255,0.1)', borderRadius: '11px', position: 'relative', cursor: 'pointer', transition: '0.3s' }}>
-                      <div style={{ position: 'absolute', top: '2px', left: isLiveSyncEnabled ? '20px' : '2px', width: '18px', height: '18px', background: isLiveSyncEnabled ? '#000' : '#888', borderRadius: '50%', transition: '0.3s' }} />
+                  <span style={{ fontSize: '0.85rem', color: isLiveSyncEnabled ? 'var(--color-timbre-treble)' : 'var(--color-text-faint)', fontWeight: 600 }}>⚡ Live Sync Windows APO</span>
+                  <div onClick={toggleLiveSync} style={{ width: '40px', height: '22px', background: isLiveSyncEnabled ? 'var(--color-timbre-treble)' : 'rgba(255,255,255,0.1)', borderRadius: '11px', position: 'relative', cursor: 'pointer', transition: '0.3s' }}>
+                      <div style={{ position: 'absolute', top: '2px', left: isLiveSyncEnabled ? '20px' : '2px', width: '18px', height: '18px', background: isLiveSyncEnabled ? '#000' : 'var(--color-text-subtle)', borderRadius: '50%', transition: '0.3s' }} />
                   </div>
               </div>
           </div>
@@ -99,7 +102,7 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '1.5rem', width: '100%' }}>
             <div>
-              <h3 style={{ fontSize: '1.15rem', color: '#ff416c', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h3 style={{ fontSize: '1.15rem', color: 'var(--color-timbre-bass)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span>🥁 GAMMA BASSA (Fondamenta & Punch)</span>
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
@@ -111,7 +114,7 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
                       onClick={() => dispatch({ type: 'UPDATE_PREF', payload: { sub_bass_gain: opt.sub_bass, mid_bass_gain: opt.mid_bass } })}
                       style={{
                         background: isSelected ? 'rgba(255, 65, 108, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                        border: `2px solid ${isSelected ? '#ff416c' : 'rgba(255, 255, 255, 0.08)'}`,
+                        border: `2px solid ${isSelected ? 'var(--color-timbre-bass)' : 'rgba(255, 255, 255, 0.08)'}`,
                         borderRadius: '16px',
                         padding: '18px 16px',
                         cursor: 'pointer',
@@ -125,13 +128,13 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
                       <div>
                         <div style={{ fontWeight: '700', color: isSelected ? '#fff' : '#eee', fontSize: '1rem', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                           <span>{opt.title}</span>
-                          {isSelected && <CheckCircle size={18} color="#ff416c" style={{ flexShrink: 0 }} />}
+                          {isSelected && <CheckCircle size={18} color="var(--color-timbre-bass)" style={{ flexShrink: 0 }} />}
                         </div>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, lineHeight: '1.4' }}>
                           {opt.desc}
                         </p>
                       </div>
-                      <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: isSelected ? '#ff416c' : '#888', fontWeight: 'bold' }}>
+                      <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: isSelected ? 'var(--color-timbre-bass)' : 'var(--color-text-subtle)', fontWeight: 'bold' }}>
                         <span>Sub: {opt.sub_bass > 0 ? `+${opt.sub_bass}` : opt.sub_bass} dB</span>
                         <span>Mid: {opt.mid_bass > 0 ? `+${opt.mid_bass}` : opt.mid_bass} dB</span>
                       </div>
@@ -142,7 +145,7 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
             </div>
 
             <div>
-              <h3 style={{ fontSize: '1.15rem', color: '#d452d1', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h3 style={{ fontSize: '1.15rem', color: 'var(--color-timbre-mids)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span>🎸 GAMMA MEDIA (Voci & Calore Acustico)</span>
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
@@ -154,7 +157,7 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
                       onClick={() => dispatch({ type: 'UPDATE_PREF', payload: { low_mids_gain: opt.low_mids, high_mids_gain: opt.high_mids } })}
                       style={{
                         background: isSelected ? 'rgba(212, 82, 209, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                        border: `2px solid ${isSelected ? '#d452d1' : 'rgba(255, 255, 255, 0.08)'}`,
+                        border: `2px solid ${isSelected ? 'var(--color-timbre-mids)' : 'rgba(255, 255, 255, 0.08)'}`,
                         borderRadius: '16px',
                         padding: '18px 16px',
                         cursor: 'pointer',
@@ -168,13 +171,13 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
                       <div>
                         <div style={{ fontWeight: '700', color: isSelected ? '#fff' : '#eee', fontSize: '1rem', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                           <span>{opt.title}</span>
-                          {isSelected && <CheckCircle size={18} color="#d452d1" style={{ flexShrink: 0 }} />}
+                          {isSelected && <CheckCircle size={18} color="var(--color-timbre-mids)" style={{ flexShrink: 0 }} />}
                         </div>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, lineHeight: '1.4' }}>
                           {opt.desc}
                         </p>
                       </div>
-                      <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: isSelected ? '#d452d1' : '#888', fontWeight: 'bold' }}>
+                      <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: isSelected ? 'var(--color-timbre-mids)' : 'var(--color-text-subtle)', fontWeight: 'bold' }}>
                         <span>Low-Mid: {opt.low_mids > 0 ? `+${opt.low_mids}` : opt.low_mids} dB</span>
                         <span>High-Mid: {opt.high_mids > 0 ? `+${opt.high_mids}` : opt.high_mids} dB</span>
                       </div>
@@ -185,7 +188,7 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
             </div>
 
             <div>
-              <h3 style={{ fontSize: '1.15rem', color: '#00ff87', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h3 style={{ fontSize: '1.15rem', color: 'var(--color-timbre-treble)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span>⚡ GAMMA ALTA (Dettaglio, Aria & Spazialità)</span>
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
@@ -197,7 +200,7 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
                       onClick={() => dispatch({ type: 'UPDATE_PREF', payload: { presence_gain: opt.presence, brilliance_gain: opt.brilliance } })}
                       style={{
                         background: isSelected ? 'rgba(0, 255, 135, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-                        border: `2px solid ${isSelected ? '#00ff87' : 'rgba(255, 255, 255, 0.08)'}`,
+                        border: `2px solid ${isSelected ? 'var(--color-timbre-treble)' : 'rgba(255, 255, 255, 0.08)'}`,
                         borderRadius: '16px',
                         padding: '18px 16px',
                         cursor: 'pointer',
@@ -211,13 +214,13 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
                       <div>
                         <div style={{ fontWeight: '700', color: isSelected ? '#fff' : '#eee', fontSize: '1rem', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                           <span>{opt.title}</span>
-                          {isSelected && <CheckCircle size={18} color="#00ff87" style={{ flexShrink: 0 }} />}
+                          {isSelected && <CheckCircle size={18} color="var(--color-timbre-treble)" style={{ flexShrink: 0 }} />}
                         </div>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, lineHeight: '1.4' }}>
                           {opt.desc}
                         </p>
                       </div>
-                      <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: isSelected ? '#00ff87' : '#888', fontWeight: 'bold' }}>
+                      <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: isSelected ? 'var(--color-timbre-treble)' : 'var(--color-text-subtle)', fontWeight: 'bold' }}>
                         <span>Presence: {opt.presence > 0 ? `+${opt.presence}` : opt.presence} dB</span>
                         <span>Brilliance: {opt.brilliance > 0 ? `+${opt.brilliance}` : opt.brilliance} dB</span>
                       </div>
@@ -238,8 +241,8 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '20px' }}>
                 <div style={{ background: 'rgba(255, 65, 108, 0.1)', border: '1px solid rgba(255, 65, 108, 0.3)', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', color: '#ff416c', fontSize: '1rem' }}>🥁 Gamma Bassa</span>
-                    <span style={{ background: '#ff416c', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
+                    <span style={{ fontWeight: 'bold', color: 'var(--color-timbre-bass)', fontSize: '1rem' }}>🥁 Gamma Bassa</span>
+                    <span style={{ background: 'var(--color-timbre-bass)', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
                       {state.listeningPreferences.sub_bass_gain > 0 ? `+${state.listeningPreferences.sub_bass_gain}` : state.listeningPreferences.sub_bass_gain} dB
                     </span>
                   </div>
@@ -250,8 +253,8 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
 
                 <div style={{ background: 'rgba(212, 82, 209, 0.1)', border: '1px solid rgba(212, 82, 209, 0.3)', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', color: '#d452d1', fontSize: '1rem' }}>🎸 Gamma Media</span>
-                    <span style={{ background: '#d452d1', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
+                    <span style={{ fontWeight: 'bold', color: 'var(--color-timbre-mids)', fontSize: '1rem' }}>🎸 Gamma Media</span>
+                    <span style={{ background: 'var(--color-timbre-mids)', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
                       {state.listeningPreferences.high_mids_gain > 0 ? `+${state.listeningPreferences.high_mids_gain}` : state.listeningPreferences.high_mids_gain} dB
                     </span>
                   </div>
@@ -262,8 +265,8 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
 
                 <div style={{ background: 'rgba(0, 255, 135, 0.1)', border: '1px solid rgba(0, 255, 135, 0.3)', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 'bold', color: '#00ff87', fontSize: '1rem' }}>⚡ Gamma Alta</span>
-                    <span style={{ background: '#00ff87', color: '#000', fontSize: '0.8rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
+                    <span style={{ fontWeight: 'bold', color: 'var(--color-timbre-treble)', fontSize: '1rem' }}>⚡ Gamma Alta</span>
+                    <span style={{ background: 'var(--color-timbre-treble)', color: '#000', fontSize: '0.8rem', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
                       {state.listeningPreferences.brilliance_gain > 0 ? `+${state.listeningPreferences.brilliance_gain}` : state.listeningPreferences.brilliance_gain} dB
                     </span>
                   </div>
@@ -273,10 +276,10 @@ export function StepTuning({ state, dispatch, varianti, eqData, setEqData, chart
                 </div>
               </div>
 
-              <div style={{ background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(59, 130, 246, 0.2))', borderLeft: '4px solid #00f0ff', padding: '14px 18px', borderRadius: '10px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(59, 130, 246, 0.2))', borderLeft: '4px solid var(--color-accent-cyan)', padding: '14px 18px', borderRadius: '10px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <span style={{ fontSize: '1.4rem' }}>🤖</span>
                 <div>
-                  <div style={{ fontWeight: 'bold', color: '#00f0ff', fontSize: '0.95rem', marginBottom: '4px' }}>Analisi AI del Timbro Globale</div>
+                  <div style={{ fontWeight: 'bold', color: 'var(--color-accent-cyan)', fontSize: '0.95rem', marginBottom: '4px' }}>Analisi AI del Timbro Globale</div>
                   <div style={{ color: '#e0e0e0', fontSize: '0.9rem', lineHeight: '1.5' }}>
                     {state.listeningPreferences.sub_bass_gain > 0 && state.listeningPreferences.brilliance_gain > 0
                       ? "Firma acustica dinamica ed energica (V-Shape o U-Shape elegante). Ottima separazione e coinvolgimento ad ogni livello di volume, con Transient Preamp di sicurezza integrato per evitare distorsione."

@@ -18,24 +18,24 @@ export function StepMusic({ state, dispatch, varianti, availableArtists, setAvai
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginTop: '24px' }}>
             <div className="option-card disabled-card" style={{ opacity: 0.65, border: '1px dashed rgba(255,255,255,0.2)', padding: '24px', borderRadius: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <span className="badge" style={{ background: '#ffb142', color: '#000', fontWeight: 'bold', marginBottom: '12px', display: 'inline-block' }}>Presto Disponibile</span>
+                <span className="badge" style={{ background: 'var(--color-semantic-warning)', color: '#000', fontWeight: 'bold', marginBottom: '12px', display: 'inline-block' }}>Presto Disponibile</span>
                 <h3 style={{ margin: '0 0 8px 0', color: '#fff', fontSize: '1.2rem' }}>🎵 Usare Brano di Test Integrato</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.4' }}>Il brano di riferimento ad altissima fedeltà (master lossless per test timbrico) sarà disponibile nelle prossime release.</p>
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#888', fontStyle: 'italic', marginTop: '12px' }}>Disponibile prossimamente</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-subtle)', fontStyle: 'italic', marginTop: '12px' }}>Disponibile prossimamente</div>
             </div>
 
             <div
               className="option-card active"
-              style={{ border: '2px solid #00f0ff', background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(59, 130, 246, 0.2))', padding: '24px', borderRadius: '16px', position: 'relative' }}
+              style={{ border: '2px solid var(--color-accent-cyan)', background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(59, 130, 246, 0.2))', padding: '24px', borderRadius: '16px', position: 'relative' }}
             >
-              <span className="badge" style={{ background: '#00f0ff', color: '#000', fontWeight: 'bold', marginBottom: '12px', display: 'inline-block' }}>⚡ Seleziona Brano</span>
+              <span className="badge" style={{ background: 'var(--color-accent-cyan)', color: '#000', fontWeight: 'bold', marginBottom: '12px', display: 'inline-block' }}>⚡ Seleziona Brano</span>
               <h3 style={{ margin: '0 0 8px 0', color: '#fff', fontSize: '1.2rem' }}>📂 Carica un tuo Brano Audio (.mp3, .wav, .flac)</h3>
               <p style={{ color: '#e0e0e0', fontSize: '0.9rem', lineHeight: '1.4', marginBottom: '16px' }}>Seleziona una canzone dal tuo computer attorno a cui far ruotare la regolazione dell'EQ in tempo reale.</p>
 
               <div className="drop-zone" style={{ margin: 0, padding: '20px', background: 'rgba(0,0,0,0.35)', border: '1px dashed rgba(0,240,255,0.5)', borderRadius: '12px', textAlign: 'center', position: 'relative', cursor: 'pointer' }}>
-                 <UploadCloud size={32} color="#00f0ff" style={{ margin: '0 auto 8px' }} />
-                 <p style={{ margin: 0, fontSize: '0.88rem', color: '#00f0ff', fontWeight: 600 }}>
+                 <UploadCloud size={32} color="var(--color-accent-cyan)" style={{ margin: '0 auto 8px' }} />
+                 <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--color-accent-cyan)', fontWeight: 600 }}>
                    {uploadedAudioTrack ? `✅ Selezionato: ${uploadedAudioTrack.name}` : 'Clicca qui o trascina il tuo file audio per avviare il Live Tuning'}
                  </p>
                  <input type="file" accept=".mp3, .wav, .flac" onChange={(e) => {
@@ -82,7 +82,7 @@ export function StepMusic({ state, dispatch, varianti, availableArtists, setAvai
                       padding: '16px',
                       borderRadius: '14px',
                       background: isSelected ? 'linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(59, 130, 246, 0.35))' : 'rgba(255, 255, 255, 0.04)',
-                      border: `1px solid ${isSelected ? '#00f0ff' : 'rgba(255, 255, 255, 0.08)'}`,
+                      border: `1px solid ${isSelected ? 'var(--color-accent-cyan)' : 'rgba(255, 255, 255, 0.08)'}`,
                       cursor: 'pointer',
                       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                       boxShadow: isSelected ? '0 8px 20px rgba(0, 240, 255, 0.2)' : 'none',
@@ -90,7 +90,7 @@ export function StepMusic({ state, dispatch, varianti, availableArtists, setAvai
                     }}
                   >
                     <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: isSelected ? '#fff' : '#e0e0e0', marginBottom: '6px' }}>{g.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: isSelected ? '#a5f3fc' : '#888', lineHeight: '1.3' }}>{g.desc}</div>
+                    <div style={{ fontSize: '0.8rem', color: isSelected ? '#a5f3fc' : 'var(--color-text-subtle)', lineHeight: '1.3' }}>{g.desc}</div>
                   </div>
                 );
               })}
@@ -108,7 +108,7 @@ export function StepMusic({ state, dispatch, varianti, availableArtists, setAvai
           <div style={{ paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', marginBottom: '8px' }}>
               <h3 style={{ fontSize: '1.2rem', color: '#fff', margin: 0 }}>🎵 Artisti Preferiti (Max 5)</h3>
-              <span style={{ fontSize: '0.9rem', fontWeight: 600, color: state.selectedArtists.length >= 5 ? '#ffb142' : '#00f0ff', background: state.selectedArtists.length >= 5 ? 'rgba(255, 177, 66, 0.15)' : 'rgba(0, 240, 255, 0.15)', padding: '4px 12px', borderRadius: '20px', border: `1px solid ${state.selectedArtists.length >= 5 ? 'rgba(255, 177, 66, 0.4)' : 'rgba(0, 240, 255, 0.4)'}` }}>
+              <span style={{ fontSize: '0.9rem', fontWeight: 600, color: state.selectedArtists.length >= 5 ? 'var(--color-semantic-warning)' : 'var(--color-accent-cyan)', background: state.selectedArtists.length >= 5 ? 'rgba(255, 177, 66, 0.15)' : 'rgba(0, 240, 255, 0.15)', padding: '4px 12px', borderRadius: '20px', border: `1px solid ${state.selectedArtists.length >= 5 ? 'rgba(255, 177, 66, 0.4)' : 'rgba(0, 240, 255, 0.4)'}` }}>
                 {state.selectedArtists.length} / 5 Selezionati
               </span>
             </div>
@@ -158,7 +158,7 @@ export function StepMusic({ state, dispatch, varianti, availableArtists, setAvai
                     <div key={artistId} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(59, 130, 246, 0.35))', border: '1px solid rgba(0, 240, 255, 0.6)', padding: '6px 14px', borderRadius: '25px', color: '#fff', fontWeight: 600, fontSize: '0.9rem', boxShadow: '0 4px 12px rgba(0, 240, 255, 0.15)', animation: 'fadeIn 0.2s ease-out' }}>
                         <span>🎵 {artObj.name}</span>
                         {artObj.genre && <span style={{ fontSize: '0.75rem', opacity: 0.85, background: 'rgba(255,255,255,0.18)', padding: '2px 8px', borderRadius: '10px' }}>{artObj.genre}</span>}
-                        <button type="button" onClick={() => dispatch({ type: 'TOGGLE_ARTIST', payload: artistId })} style={{ background: 'transparent', border: 'none', color: '#ff4757', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0, marginLeft: '4px', fontWeight: 'bold', fontSize: '1.1rem', transition: 'transform 0.2s' }} title="Rimuovi artista">✕</button>
+                        <button type="button" onClick={() => dispatch({ type: 'TOGGLE_ARTIST', payload: artistId })} style={{ background: 'transparent', border: 'none', color: 'var(--color-semantic-error)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0, marginLeft: '4px', fontWeight: 'bold', fontSize: '1.1rem', transition: 'transform 0.2s' }} title="Rimuovi artista">✕</button>
                     </div>
                   );
                 })
@@ -166,13 +166,13 @@ export function StepMusic({ state, dispatch, varianti, availableArtists, setAvai
             </div>
 
             {state.selectedArtists.length >= 5 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#ffb142', background: 'rgba(255, 177, 66, 0.12)', border: '1px solid rgba(255, 177, 66, 0.4)', padding: '12px 18px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 600, marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--color-semantic-warning)', background: 'rgba(255, 177, 66, 0.12)', border: '1px solid rgba(255, 177, 66, 0.4)', padding: '12px 18px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 600, marginBottom: '20px' }}>
                 <span>⚠️ Limite massimo di 5 artisti raggiunto. Rimuovi un artista cliccando sulla "✕" per aggiungerne di nuovi.</span>
               </div>
             )}
 
             <div style={{ marginTop: '10px' }}>
-              <div style={{ fontSize: '0.85rem', color: '#888', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Artisti Suggeriti dal Grafo di Conoscenza:</div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--color-text-subtle)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Artisti Suggeriti dal Grafo di Conoscenza:</div>
               <div className="artists-grid" style={{ maxHeight: '200px', overflowY: 'auto', paddingRight: '4px' }}>
                  {availableArtists
                    .filter(a => !searchArtistQuery || a.name.toLowerCase().includes(searchArtistQuery.toLowerCase()))

@@ -77,18 +77,18 @@ export function FineTuningPanel({ handleRefineEQ, isRefining, paramEq, setParamE
 
           <div className="parametric-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#00f0ff' }}>Inserimento Manuale</h4>
+              <h4 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-accent-cyan)' }}>Inserimento Manuale</h4>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: '0.7rem', color: '#aaa', display: 'block' }}>Freq (Hz)</label>
+                  <label style={{ fontSize: '0.7rem', color: 'var(--color-text-faint)', display: 'block' }}>Freq (Hz)</label>
                   <input type="number" className="hardware-input" style={{ width: '100%', padding: '6px', fontSize: '0.85rem', background: '#13131f' }} value={paramEq.freq} onChange={e => setParamEq({...paramEq, freq: e.target.value})} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: '0.7rem', color: '#aaa', display: 'block' }}>Gain (dB)</label>
+                  <label style={{ fontSize: '0.7rem', color: 'var(--color-text-faint)', display: 'block' }}>Gain (dB)</label>
                   <input type="number" step="0.5" className="hardware-input" style={{ width: '100%', padding: '6px', fontSize: '0.85rem', background: '#13131f' }} value={paramEq.gain} onChange={e => setParamEq({...paramEq, gain: e.target.value})} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: '0.7rem', color: '#aaa', display: 'block' }}>Q-Factor</label>
+                  <label style={{ fontSize: '0.7rem', color: 'var(--color-text-faint)', display: 'block' }}>Q-Factor</label>
                   <input type="number" step="0.1" className="hardware-input" style={{ width: '100%', padding: '6px', fontSize: '0.85rem', background: '#13131f' }} value={paramEq.q} onChange={e => setParamEq({...paramEq, q: e.target.value})} />
                 </div>
               </div>
@@ -98,7 +98,7 @@ export function FineTuningPanel({ handleRefineEQ, isRefining, paramEq, setParamE
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', background: 'rgba(255, 177, 66, 0.05)', padding: '15px', borderRadius: '10px', border: '1px solid rgba(255, 177, 66, 0.2)' }}>
-              <h4 style={{ margin: 0, fontSize: '0.9rem', color: '#ffb142' }}>Assistente IA (Testo Libero)</h4>
+              <h4 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-semantic-warning)' }}>Assistente IA (Testo Libero)</h4>
               <textarea
                 className="hardware-input"
                 style={{ width: '100%', padding: '8px', fontSize: '0.85rem', background: '#13131f', resize: 'none', height: '60px' }}
@@ -106,7 +106,7 @@ export function FineTuningPanel({ handleRefineEQ, isRefining, paramEq, setParamE
                 value={aiPrompt}
                 onChange={e => setAiPrompt(e.target.value)}
               />
-              <button onClick={handleAiParametric} disabled={isAiProcessing || isRefining || !aiPrompt.trim()} className="btn-primary" style={{ padding: '8px', fontSize: '0.85rem', background: '#ffb142', color: '#000' }}>
+              <button onClick={handleAiParametric} disabled={isAiProcessing || isRefining || !aiPrompt.trim()} className="btn-primary" style={{ padding: '8px', fontSize: '0.85rem', background: 'var(--color-semantic-warning)', color: '#000' }}>
                 {isAiProcessing ? "Elaborazione IA..." : "Invia all'IA"}
               </button>
             </div>
@@ -114,11 +114,11 @@ export function FineTuningPanel({ handleRefineEQ, isRefining, paramEq, setParamE
         </div>
 
       {historyLog.length > 0 && (
-        <div style={{ marginTop: '18px', padding: '12px 16px', background: 'rgba(0,0,0,0.3)', borderRadius: '10px', borderLeft: '3px solid #00f0ff', maxHeight: '120px', overflowY: 'auto' }}>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#00f0ff', fontWeight: 'bold', marginBottom: '6px' }}>Cronologia Ritocchi (Applicati su DSP):</div>
+        <div style={{ marginTop: '18px', padding: '12px 16px', background: 'rgba(0,0,0,0.3)', borderRadius: '10px', borderLeft: '3px solid var(--color-accent-cyan)', maxHeight: '120px', overflowY: 'auto' }}>
+          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-accent-cyan)', fontWeight: 'bold', marginBottom: '6px' }}>Cronologia Ritocchi (Applicati su DSP):</div>
           {historyLog.map((logItem, idx) => (
             <div key={idx} style={{ fontSize: '0.85rem', color: '#e0e0e0', margin: '3px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ color: '#00f0ff' }}>✓</span> {logItem}
+              <span style={{ color: 'var(--color-accent-cyan)' }}>✓</span> {logItem}
             </div>
           ))}
         </div>

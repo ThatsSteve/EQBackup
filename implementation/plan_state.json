@@ -1,25 +1,94 @@
-{
-  "plan_version": "2.0",
-  "current_phase": 5,
-  "heartbeat": null,
-  "current_step": "in attesa di avvio",
-  "step_count_this_phase": 0,
-  "phases": {
-    "0": { "title": "Governance & tooling", "status": "done", "attempts": 0, "last_verify": "PASS" },
-    "1": { "title": "Stabilizzazione critica", "status": "done", "attempts": 0, "last_verify": "PASS" },
-    "2": { "title": "Layer astrazione provider IA (backend)", "status": "done", "attempts": 0, "last_verify": "PASS" },
-    "3": { "title": "Onboarding Configura la tua IA (frontend)", "status": "done", "attempts": 0, "last_verify": "PASS" },
-    "4": { "title": "Design system & rifattorizzazione frontend", "status": "done", "attempts": 3, "last_verify": "PASS" },
-    "5": { "title": "Redesign wizard + player A/B", "status": "ready", "attempts": 0, "last_verify": null },
-    "6": { "title": "Chat IA persistente e seamless", "status": "pending", "attempts": 0, "last_verify": null },
-    "7": { "title": "Hardening finale & pre-pubblicazione", "status": "pending", "attempts": 0, "last_verify": null }
-  },
-  "notes": [
-    { "date": "2026-08-17", "phase": 0, "summary": "Fase 0 completata: governance e tooling (6 agenti, Vitest/Vitest+Supertest, hook pre-commit gitleaks, CI npm audit, .env.example, .gitignore) con security e QA PASS." },
-    { "date": "2026-08-17", "phase": 1, "summary": "Fase 1 completata: stabilizzazione critica backend (fix ReferenceError graphResult, recommended_modifiers + calculateWeightedArtistProfile nel flusso, preamp combinato + guardrails su tutti i filtri, rimozione skipLMStudio hardcoded, test E2E offline) con security e QA PASS." },
-    { "date": "2026-08-18", "phase": 2, "summary": "Fase 2 completata: layer astrazione provider IA backend (engine/ai/: ProviderInterface, registry, eqIntentSchema unica fonte di verità, capabilityProbe tier 1/2/3, jsonRepair con 1 retry, secretsVault safeStorage-ready dev-only, promptSanitizer, adapter OpenAI-compatibile + Anthropic + stub Gemini; 4 endpoint REST profili, SSE /api/chat/stream, giuntura con Fase 1, 8 file di test offline con criteri a/b verdi) con security e QA PASS." },
-    { "date": "2026-08-18", "phase": 3, "summary": "Fase 3 completata: onboarding Configura la tua IA come gate sopra il wizard (OnboardingAiStep.jsx con opzioni Locale/Cloud/Nessuna IA, badge tier 1/2/3, test connessione esplicito, multi-profilo via activate, mascheratura API key; modulo puro aiConfig.js con 22 test Vitest; App.jsx +57/-0 in 5 punti, step esistenti invariati) con security e QA PASS." },
-    { "date": "2026-08-18", "phase": 4, "summary": "Fase 4 completata (tentativo 3): App.jsx da monolite 2673 a shell 166 righe con gate IA (onboarding/manage), WizardShell + 5 step estratti (steps/), AIPersona, Scene3D, ManualSpecsCard, EqCurveTooltip, 7 hook e EqStateContext cablati, OnboardingAiStep scomposto in onboarding-ai/ (7 file <300 righe), design-tokens centralizzati; 126+65 test verdi, build Vite OK, gate security e QA PASS." },
-    { "date": "2026-08-18", "phase": 0, "summary": "Migrazione architettura v2 (6->4 agenti, fasi in implementation/phases/, verifier unico): file riordinati; da coprire in Fase 0: package.json main=index.js inesistente + nessuno script start, licenza ISC (pkg) vs MIT (README), rimozione test-api.js/test_phase2.js rotti." }
-  ]
+﻿{
+    "plan_version":  "2.0",
+    "current_phase":  6,
+    "heartbeat":  "2026-08-18T11:17:51.112Z",
+    "current_step":  "in attesa di avvio",
+    "step_count_this_phase":  3,
+    "phases":  {
+                   "0":  {
+                             "title":  "Governance \u0026 tooling",
+                             "status":  "done",
+                             "attempts":  0,
+                             "last_verify":  "PASS"
+                         },
+                   "1":  {
+                             "title":  "Stabilizzazione critica",
+                             "status":  "done",
+                             "attempts":  0,
+                             "last_verify":  "PASS"
+                         },
+                   "2":  {
+                             "title":  "Layer astrazione provider IA (backend)",
+                             "status":  "done",
+                             "attempts":  0,
+                             "last_verify":  "PASS"
+                         },
+                   "3":  {
+                             "title":  "Onboarding Configura la tua IA (frontend)",
+                             "status":  "done",
+                             "attempts":  0,
+                             "last_verify":  "PASS"
+                         },
+                   "4":  {
+                             "title":  "Design system \u0026 rifattorizzazione frontend",
+                             "status":  "done",
+                             "attempts":  3,
+                             "last_verify":  "PASS"
+                         },
+                   "5":  {
+                             "title":  "Redesign wizard + player A/B",
+                             "status":  "done",
+                             "attempts":  2,
+                             "last_verify":  "PASS"
+                         },
+                   "6":  {
+                             "title":  "Chat IA persistente e seamless",
+                             "status":  "ready",
+                             "attempts":  0,
+                             "last_verify":  null
+                         },
+                   "7":  {
+                             "title":  "Hardening finale \u0026 pre-pubblicazione",
+                             "status":  "pending",
+                             "attempts":  0,
+                             "last_verify":  null
+                         }
+               },
+    "notes":  [
+                  {
+                      "date":  "2026-08-17",
+                      "phase":  0,
+                      "summary":  "Fase 0 completata: governance e tooling (6 agenti, Vitest/Vitest+Supertest, hook pre-commit gitleaks, CI npm audit, .env.example, .gitignore) con security e QA PASS."
+                  },
+                  {
+                      "date":  "2026-08-17",
+                      "phase":  1,
+                      "summary":  "Fase 1 completata: stabilizzazione critica backend (fix ReferenceError graphResult, recommended_modifiers + calculateWeightedArtistProfile nel flusso, preamp combinato + guardrails su tutti i filtri, rimozione skipLMStudio hardcoded, test E2E offline) con security e QA PASS."
+                  },
+                  {
+                      "date":  "2026-08-18",
+                      "phase":  2,
+                      "summary":  "Fase 2 completata: layer astrazione provider IA backend (engine/ai/: ProviderInterface, registry, eqIntentSchema unica fonte di veritÃ , capabilityProbe tier 1/2/3, jsonRepair con 1 retry, secretsVault safeStorage-ready dev-only, promptSanitizer, adapter OpenAI-compatibile + Anthropic + stub Gemini; 4 endpoint REST profili, SSE /api/chat/stream, giuntura con Fase 1, 8 file di test offline con criteri a/b verdi) con security e QA PASS."
+                  },
+                  {
+                      "date":  "2026-08-18",
+                      "phase":  3,
+                      "summary":  "Fase 3 completata: onboarding Configura la tua IA come gate sopra il wizard (OnboardingAiStep.jsx con opzioni Locale/Cloud/Nessuna IA, badge tier 1/2/3, test connessione esplicito, multi-profilo via activate, mascheratura API key; modulo puro aiConfig.js con 22 test Vitest; App.jsx +57/-0 in 5 punti, step esistenti invariati) con security e QA PASS."
+                  },
+                  {
+                      "date":  "2026-08-18",
+                      "phase":  4,
+                      "summary":  "Fase 4 completata (tentativo 3): App.jsx da monolite 2673 a shell 166 righe con gate IA (onboarding/manage), WizardShell + 5 step estratti (steps/), AIPersona, Scene3D, ManualSpecsCard, EqCurveTooltip, 7 hook e EqStateContext cablati, OnboardingAiStep scomposto in onboarding-ai/ (7 file \u003c300 righe), design-tokens centralizzati; 126+65 test verdi, build Vite OK, gate security e QA PASS."
+                  },
+                  {
+                      "date":  "2026-08-18",
+                      "phase":  0,
+                      "summary":  "Migrazione architettura v2 (6-\u003e4 agenti, fasi in implementation/phases/, verifier unico): file riordinati; da coprire in Fase 0: package.json main=index.js inesistente + nessuno script start, licenza ISC (pkg) vs MIT (README), rimozione test-api.js/test_phase2.js rotti."
+                  },
+                  {
+                      "date":  "2026-08-18",
+                      "phase":  5,
+                      "summary":  "Fase 5 completata: fix AudioPlayerAB (biquadNodesRef popolato in parametrica, doppio volume eliminato, RAF loop cleanup a fine brano), design-tokens applicati a tutti gli step (9 file), EqCurveTable.jsx vista tabellare accessibile per i grafici Recharts (WCAG 2.1 AA); 65+126 test verdi, build OK, lint 0 errori, gate verifier PASS. Esito passato da blocked (2 tentativi dev agent falliti) a done dopo dev in sessione principale."
+                  }
+              ]
 }

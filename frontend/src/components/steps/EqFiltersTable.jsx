@@ -29,7 +29,7 @@ export function EqFiltersTable({ activeTabEq, baselineEqData, eqData }) {
                   {f.origin === 'MANUALE' && <span className="badge-origin badge-manuale">MANUALE</span>}
                 </td>
                 <td>{f.freq}</td>
-                <td style={{ color: f.gain > 0 ? '#ff3366' : '#3b82f6' }}>
+                <td style={{ color: f.gain > 0 ? 'var(--color-semantic-danger)' : 'var(--color-accent-blue)' }}>
                   {f.gain > 0 ? '+' : ''}{f.gain.toFixed(2)}
                 </td>
                 <td>{f.q}</td>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { EqCurveTooltip } from '../charts/EqCurveTooltip';
+import { EqCurveTable } from '../charts/EqCurveTable';
 import { FineTuningPanel } from './FineTuningPanel';
 import { EqFiltersTable } from './EqFiltersTable';
 import { FaqSection } from './FaqSection';
@@ -18,13 +19,13 @@ export function StepEqFinal({ state, dispatch, varianti, chartData, activeTabEq,
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px', background: 'rgba(255,255,255,0.03)', padding: '12px 18px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '0.9rem', color: '#aaa', fontWeight: 600 }}>Visualizzazione Curva:</span>
+          <span style={{ fontSize: '0.9rem', color: 'var(--color-text-faint)', fontWeight: 600 }}>Visualizzazione Curva:</span>
           <div className="ab-toggle-group">
             <button
               type="button"
               className={`ab-btn ${activeTabEq === 'A' ? 'active' : ''}`}
               onClick={() => setActiveTabEq('A')}
-              style={{ border: '1px solid rgba(255, 51, 102, 0.5)', color: activeTabEq === 'A' ? '#fff' : '#ff3366', background: activeTabEq === 'A' ? 'rgba(255, 51, 102, 0.2)' : 'transparent' }}
+              style={{ border: '1px solid rgba(255, 51, 102, 0.5)', color: activeTabEq === 'A' ? '#fff' : 'var(--color-semantic-danger)', background: activeTabEq === 'A' ? 'rgba(255, 51, 102, 0.2)' : 'transparent' }}
             >
               Prima (Originale)
             </button>
@@ -32,7 +33,7 @@ export function StepEqFinal({ state, dispatch, varianti, chartData, activeTabEq,
               type="button"
               className={`ab-btn ${activeTabEq === 'B' ? 'active' : ''}`}
               onClick={() => setActiveTabEq('B')}
-              style={{ border: '1px solid rgba(0, 240, 255, 0.5)', color: activeTabEq === 'B' ? '#fff' : '#00f0ff', background: activeTabEq === 'B' ? 'rgba(0, 240, 255, 0.2)' : 'transparent' }}
+              style={{ border: '1px solid rgba(0, 240, 255, 0.5)', color: activeTabEq === 'B' ? '#fff' : 'var(--color-accent-cyan)', background: activeTabEq === 'B' ? 'rgba(0, 240, 255, 0.2)' : 'transparent' }}
             >
               Dopo (Affinata IA)
             </button>
@@ -44,7 +45,7 @@ export function StepEqFinal({ state, dispatch, varianti, chartData, activeTabEq,
               type="button"
               className="ab-btn"
               onClick={handleRestoreBaseline}
-              style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#ffb142', borderColor: 'rgba(255, 177, 66, 0.3)', padding: '6px 14px' }}
+              style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--color-semantic-warning)', borderColor: 'rgba(255, 177, 66, 0.3)', padding: '6px 14px' }}
               title="Ripristina istantaneamente la curva iniziale calcolata dal Grafo (Senza IA)"
             >
               ↩️ Ripristina Hardware Neutro
@@ -55,7 +56,7 @@ export function StepEqFinal({ state, dispatch, varianti, chartData, activeTabEq,
               type="button"
               className="ab-btn"
               onClick={handleRestoreAI}
-              style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#00f0ff', borderColor: 'rgba(0, 240, 255, 0.3)', padding: '6px 14px' }}
+              style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--color-accent-cyan)', borderColor: 'rgba(0, 240, 255, 0.3)', padding: '6px 14px' }}
               title="Ripristina la curva ottimizzata dall'IA (rimuove i tuoi ritocchi manuali successivi)"
             >
               ↩️ Ripristina Profilo IA
@@ -70,7 +71,7 @@ export function StepEqFinal({ state, dispatch, varianti, chartData, activeTabEq,
               border: refinementHistory.length > 0 ? '1px solid rgba(255, 165, 0, 0.5)' : '1px solid rgba(255,255,255,0.2)',
               borderRadius: '8px',
               padding: '6px 14px',
-              color: refinementHistory.length === 0 ? 'rgba(255,255,255,0.2)' : '#ffa500',
+              color: refinementHistory.length === 0 ? 'rgba(255,255,255,0.2)' : 'var(--color-semantic-warningAlt)',
               cursor: refinementHistory.length === 0 ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -84,19 +85,28 @@ export function StepEqFinal({ state, dispatch, varianti, chartData, activeTabEq,
         </div>
       </div>
 
-      <div className="chart-container">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#2a2a35" />
-            <XAxis dataKey="freq" type="number" domain={[20, 20000]} scale="log" ticks={[20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]} stroke="#8a8a93" tickFormatter={(v) => v>=1000?`${v/1000}k`:v} />
-            <YAxis domain={['auto', 'auto']} stroke="#8a8a93" tickFormatter={(v) => `${v>0?'+':''}${v}dB`} />
-            <Tooltip content={<EqCurveTooltip />} />
-            <Line type="monotone" dataKey="baselineGain" name="Hardware (Originale)" stroke="rgba(255, 51, 102, 0.35)" strokeWidth={2} strokeDasharray="5 5" dot={false} isAnimationActive={false} />
-            <Line type="monotone" dataKey="aiGain" name="AI (Generato)" stroke="rgba(255, 177, 66, 0.6)" strokeWidth={2} strokeDasharray="3 3" dot={false} isAnimationActive={false} />
-            <Line type="monotone" dataKey="manualGain" name="Manuale (Attuale)" stroke="#00f0ff" strokeWidth={3} dot={false} animationDuration={1000} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <EqCurveTable
+        chartData={chartData}
+        series={[
+          { key: 'baselineGain', label: 'Hardware (Originale) (dB)', color: 'rgba(255, 51, 102, 0.9)' },
+          { key: 'aiGain', label: 'AI (Generato) (dB)', color: '#ffb142' },
+          { key: 'manualGain', label: 'Manuale (Attuale) (dB)', color: '#00f0ff' },
+        ]}
+      >
+        <div className="chart-container">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a35" />
+              <XAxis dataKey="freq" type="number" domain={[20, 20000]} scale="log" ticks={[20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]} stroke="#8a8a93" tickFormatter={(v) => v>=1000?`${v/1000}k`:v} />
+              <YAxis domain={['auto', 'auto']} stroke="#8a8a93" tickFormatter={(v) => `${v>0?'+':''}${v}dB`} />
+              <Tooltip content={<EqCurveTooltip />} />
+              <Line type="monotone" dataKey="baselineGain" name="Hardware (Originale)" stroke="rgba(255, 51, 102, 0.35)" strokeWidth={2} strokeDasharray="5 5" dot={false} isAnimationActive={false} />
+              <Line type="monotone" dataKey="aiGain" name="AI (Generato)" stroke="rgba(255, 177, 66, 0.6)" strokeWidth={2} strokeDasharray="3 3" dot={false} isAnimationActive={false} />
+              <Line type="monotone" dataKey="manualGain" name="Manuale (Attuale)" stroke="#00f0ff" strokeWidth={3} dot={false} animationDuration={1000} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </EqCurveTable>
 
       <FineTuningPanel
         handleRefineEQ={handleRefineEQ}

@@ -19,7 +19,7 @@ export function StepHardware({ state, dispatch, showError, setShowError, variant
         {/* SELEZIONE CUFFIE */}
         <div className="input-group">
           <div className="input-label-container">
-             <label className="input-label">Marchio Cuffie <span style={{color: '#ff4757'}}>*</span></label>
+             <label className="input-label">Marchio Cuffie <span style={{color: 'var(--color-semantic-error)'}}>*</span></label>
              <div className="tooltip-trigger" title="Filtra a cascata per produttore (Es. Sennheiser, Sony, Focal)"><HelpCircle size={15}/></div>
           </div>
           <SearchableCombobox
@@ -41,7 +41,7 @@ export function StepHardware({ state, dispatch, showError, setShowError, variant
           {selectedBrand.headphone && (
             <div style={{ marginTop: '10px' }}>
               <div className="input-label-container">
-                 <label className="input-label">Modello Cuffie <span style={{color: '#ff4757'}}>*</span></label>
+                 <label className="input-label">Modello Cuffie <span style={{color: 'var(--color-semantic-error)'}}>*</span></label>
               </div>
               <div className="input-wrapper-validated" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <div style={{ position: 'relative', flexGrow: 1, width: '100%' }}>
@@ -87,12 +87,12 @@ export function StepHardware({ state, dispatch, showError, setShowError, variant
                   )}
 
                   {hwLoading.headphone && (
-                    <div className="validation-badge" style={{ borderColor: '#ffb142', color: '#ffb142' }}>
+                    <div className="validation-badge" style={{ borderColor: 'var(--color-semantic-warning)', color: 'var(--color-semantic-warning)' }}>
                       <span>🔍 Ricerca...</span>
                     </div>
                   )}
                   {!hwLoading.headphone && hwStatus.headphone && (
-                    <div className="validation-badge" style={{ borderColor: hwStatus.headphone.status === 'RESOLVED_LOCAL' ? '#00f0ff' : hwStatus.headphone.status === 'RESOLVED_ONLINE' ? '#10b981' : '#ffb142', color: hwStatus.headphone.status === 'RESOLVED_LOCAL' ? '#00f0ff' : hwStatus.headphone.status === 'RESOLVED_ONLINE' ? '#10b981' : '#ffb142' }}>
+                    <div className="validation-badge" style={{ borderColor: hwStatus.headphone.status === 'RESOLVED_LOCAL' ? 'var(--color-accent-cyan)' : hwStatus.headphone.status === 'RESOLVED_ONLINE' ? 'var(--color-semantic-successAlt)' : 'var(--color-semantic-warning)', color: hwStatus.headphone.status === 'RESOLVED_LOCAL' ? 'var(--color-accent-cyan)' : hwStatus.headphone.status === 'RESOLVED_ONLINE' ? 'var(--color-semantic-successAlt)' : 'var(--color-semantic-warning)' }}>
                       {hwStatus.headphone.status === 'RESOLVED_LOCAL' && <CheckCircle size={14} />}
                       {hwStatus.headphone.status === 'RESOLVED_ONLINE' && <Bot size={14} />}
                       {hwStatus.headphone.status === 'REQUIRES_USER_INPUT' && <HelpCircle size={14} />}
@@ -105,7 +105,7 @@ export function StepHardware({ state, dispatch, showError, setShowError, variant
                   )}
                   {!hwLoading.headphone && !hwStatus.headphone && state.headphone && state.headphone.trim() !== '' && (
                     <div className="validation-badge">
-                      <CheckCircle size={14} color="#00f0ff" />
+                      <CheckCircle size={14} color="var(--color-accent-cyan)" />
                       <span>Configurato</span>
                     </div>
                   )}

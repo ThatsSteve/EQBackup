@@ -20,7 +20,7 @@ export function ExportActions({ presetName, setPresetName, handleSavePreset, pre
              />
              {presetName && presetName.trim() !== '' && (
                <div className="validation-badge">
-                 <CheckCircle size={14} color="#00f0ff" />
+                 <CheckCircle size={14} color="var(--color-accent-cyan)" />
                  <span>Pronto</span>
                </div>
              )}
@@ -48,7 +48,7 @@ export function ExportActions({ presetName, setPresetName, handleSavePreset, pre
 
        <div style={{display: 'flex', gap: '14px', width: '100%', justifyContent: 'center', flexWrap: 'wrap', marginTop: '14px'}}>
            <button className="btn-secondary copy-btn" onClick={() => copyToClipboard(exportRawData, () => { setCopied(true); setTimeout(() => setCopied(false), 2000); })} style={{minWidth: '200px'}}>
-             {copied ? <Check size={18} color="#00f0ff" /> : <Copy size={18} />}
+             {copied ? <Check size={18} color="var(--color-accent-cyan)" /> : <Copy size={18} />}
              {copied ? 'Copiato!' : 'Appunti'}
            </button>
            <button className="btn-primary export-btn" onClick={() => downloadFile(exportRawData)} style={{minWidth: '150px'}}>
@@ -57,7 +57,7 @@ export function ExportActions({ presetName, setPresetName, handleSavePreset, pre
            <button className="btn-primary export-btn" onClick={() => downloadWavelet(eqData)} style={{minWidth: '150px'}}>
              <Download size={18} /> Wavelet (.txt)
            </button>
-           <button className="btn-secondary copy-btn" onClick={() => downloadPassportJSON(eqData, state)} style={{minWidth: '150px', background: 'rgba(255, 177, 66, 0.1)', borderColor: '#ffb142', color: '#ffb142'}}>
+           <button className="btn-secondary copy-btn" onClick={() => downloadPassportJSON(eqData, state)} style={{minWidth: '150px', background: 'rgba(255, 177, 66, 0.1)', borderColor: 'var(--color-semantic-warning)', color: 'var(--color-semantic-warning)'}}>
              <Download size={18} /> JSON
            </button>
        </div>
